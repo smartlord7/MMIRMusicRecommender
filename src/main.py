@@ -6,11 +6,9 @@ TOP100_FEATURES_PATH = "data/features/top100_features.csv"
 
 
 def min_max_normalize(matrix, a=0, b=1):
-    min_val = matrix.min() * np.ones(matrix.shape)
-    max_val = matrix.max() * np.ones(matrix.shape)
-    a = a * np.ones(matrix.shape)
-    b = b * np.ones(matrix.shape)
-
+    min_val = matrix.min()
+    max_val = matrix.max()
+    
     matrix = (a + (matrix - min_val) * (b - a)) / (max_val - min_val)
 
     return matrix
