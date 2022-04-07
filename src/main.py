@@ -1,54 +1,33 @@
-import warnings
-
-import librosa as librosa
-import librosa.display
-import librosa.beat
-import sounddevice as sd
-import matplotlib.pyplot as plt
 import numpy as np
 
 
-def test():
+FEATURE_DELIM = ","
+TOP100_FEATURES_PATH = "data/features/top100_features.csv"
 
-    # --- Load file
-    # fName = "--/Queries/MT0000414517.mp3"
-    fName = "data/queries/MT0000202045.mp3"
-    sr = 22050
-    mono = True
-    warnings.filterwarnings("ignore")
-    y, fs = librosa.load(fName, sr=sr, mono=mono)
-    print(y.shape)
-    print(fs)
 
-    # --- Play Sound
-    sd.play(y, sr, blocking=False)
+def min_max_normalize(matrix, a=0, b=1):
+    min_val = matrix.min() * np.ones(matrix.shape)
+    max_val = matrix.max() * np.ones(matrix.shape)
+    a = a * np.ones(matrix.shape)
+    b = b * np.ones(matrix.shape)
 
-    # --- Plot sound waveform
-    plt.figure()
-    librosa.display.waveshow(y)
+    matrix = (a + (matrix - min_val) * (b - a)) / (max_val - min_val)
 
-    # --- Plot spectrogram
-    Y = np.abs(librosa.stft(y))
-    Ydb = librosa.amplitude_to_db(Y, ref=np.max)
-    fig, ax = plt.subplots()
-    img = librosa.display.specshow(Ydb, y_axis='linear', x_axis='time', ax=ax)
-    ax.set_title('Power spectrogram')
-    fig.colorbar(img, ax=ax, format="%+2.0f dB")
+    return matrix
 
-    # --- Extract features
-    rms = librosa.feature.rms(y=y)
-    rms = rms[0, :]
-    print(rms.shape)
-    times = librosa.times_like(rms)
-    plt.figure(), plt.plot(times, rms)
-    plt.xlabel('Time (s)')
-    plt.title('RMS')
 
-    plt.show()
+def process_features(path):
+    matrix = np.genfromtxt(path, delimiter=FEATURE_DELIM)
+    matrix = matrix[1:, 1:matrix.shape[1] - 1]
+
+    matrix = min_max_normalize(matrix)
+
+    return matrix
 
 
 def main():
-    test()
+    print(process_features(TOP100_FEATURES_PATH))
+
 
 if __name__ == '__main__':
     main()
