@@ -9,7 +9,9 @@ import numpy as np
 
 
 def test1():
-
+    """
+    Function used to test the implemented functions.
+    """
     # --- Load file
     # fName = "--/Queries/MT0000414517.mp3"
     fName = "data/queries/MT0000202045.mp3"
