@@ -1,4 +1,8 @@
 import librosa.feature as lf
+import librosa
+import librosa.display
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def mfcc(matrix, n):
@@ -17,7 +21,27 @@ def centroid(matrix):
     :param matrix: the given matrix.
     :return: the spectral centroid.
     """
-    return lf.spectral_centroid(matrix)
+
+    # Time-Series input
+    cent = librosa.feature.spectral_centroid(y=matrix, sr=22050)
+
+    # Spectrogram input
+    s, phase = librosa.magphase(librosa.stft(y=matrix))
+    cent = librosa.feature.spectral_centroid(S=s)
+
+
+    '''
+    # Attempt to plot, but doesn't work :(
+    times = librosa.times_like(cent)
+    fig, ax = plt.subplots()
+    D = librosa.amplitude_to_db(np.abs(librosa.stft(matrix)), ref=np.max)
+    librosa.display.specshow(D, y_axis='log', x_axis='time', sr=22050, ax=ax)
+    ax.plot(times, cent.T, label='Spectral centroid', color='w')
+    ax.legend(loc='upper right')
+    ax.set(title='log Power spectrogram')
+    '''
+
+    return cent
 
 
 def bandwidth(matrix, n_bands):
@@ -45,7 +69,19 @@ def flatness(matrix):
     :param matrix: the given matrix.
     :return: the spectral flatness.
     """
-    return lf.spectral_flatness(matrix)
+
+    # Time-Series input
+    flat = librosa.feature.spectral_flatness(y=matrix)
+
+    # Spectrogram input
+    s, phase = librosa.magphase(librosa.stft(y=matrix))
+    flat = librosa.feature.spectral_flatness(S=s)
+
+    # Power Spectrogram input
+    s_power = s ** 2
+    flat = librosa.feature.spectral_flatness(S=s_power, power=1.0)
+
+    return flat
 
 
 def rolloff(matrix):

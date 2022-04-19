@@ -1,5 +1,8 @@
 import numpy as np
 from const import *
+from features.spectral_features import *
+from features.temporal_features import *
+
 
 def min_max_normalize(matrix, a=0, b=1):
     """
@@ -29,6 +32,10 @@ def process_features(in_path, out_path):
 
     values = min_max_normalize(values)
     np.savetxt(out_path, values, delimiter=FEATURE_DELIM)
+
+    # cent = centroid(values)
+    # flat = flatness(values)
+    # rms = rms(values)
 
     return values
 
