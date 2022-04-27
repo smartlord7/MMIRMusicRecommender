@@ -1,33 +1,28 @@
-import numpy as np
-from const import *
+import os
+import warnings
 from util.process import *
+from features.temporal import *
 
 
-def process_features(in_path, out_path):
-    """
-    Function used to process the used features.
-    :param in_path: the input directory.
-    :param out_path: the output directory.
-    :return: required values.
-    """
-    matrix = np.genfromtxt(in_path, delimiter=FEATURE_DELIM)
-    values = matrix[1:, 1:matrix.shape[1] - 1]
+def process_data(dir_path, extension, process_callback):
+    data = dict()
+    for file_name in os.listdir(dir_path):
+        if file_name.endswith(extension):
+            print("Processing %s..." % file_name)
+            matrix, _ = librosa.load(dir_path + "/" + file_name, sr=SAMPLING_RATE, mono=IS_AUDIO_MODE_MONO)
+            data[file_name] = process_callback(matrix)
 
-    values = min_max_normalize(values)
-    np.savetxt(out_path, values, delimiter=FEATURE_DELIM)
-
-    # cent = centroid(values)
-    # flat = flatness(values)
-    # rms = rms(values)
-
-    return values
+    return data
 
 
 def main():
     """
     Main function.
     """
-    process_features(IN_PATH_ORIGINAL_FEATURES, OUT_PATH_ORIGINAL_FEATURES)
+
+    warnings.filterwarnings("ignore")
+    data = process_data(IN_DIR_PATH_ALL_DATABASE, EXTENSION_DATA, featurize)
+
 
 if __name__ == '__main__':
     main()

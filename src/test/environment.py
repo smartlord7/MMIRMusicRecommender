@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def test1():
+def test():
     """
     Function used to test the implemented functions.
     """
