@@ -4,15 +4,19 @@ from util.process import *
 from features.temporal import *
 
 
-def process_data(dir_path, extension, process_callback):
-    data = dict()
-    for file_name in os.listdir(dir_path):
-        if file_name.endswith(extension):
-            print("Processing %s..." % file_name)
-            matrix, _ = librosa.load(dir_path + "/" + file_name, sr=SAMPLING_RATE, mono=IS_AUDIO_MODE_MONO)
-            data[file_name] = process_callback(matrix)
+def process_data(process_callback,
+                 dir_path=IN_DIR_PATH_ALL_DATABASE,
+                 out_path=OUT_PATH_ALL_FEATURES,
+                 in_extension=EXTENSION_DATA):
 
-    return data
+    with open(out_path, "w") as out_file:
+        for data_file_name in os.listdir(dir_path):
+            if data_file_name.endswith(in_extension):
+                print("Processing %s..." % data_file_name)
+                data, _ = librosa.load(dir_path + data_file_name, sr=SAMPLING_RATE, mono=IS_AUDIO_MODE_MONO)
+                processed = process_callback(data)
+                np.savetxt(out_file, processed)
+                out_file.write(FEATURE_DELIM)
 
 
 def main():
@@ -21,7 +25,7 @@ def main():
     """
 
     warnings.filterwarnings("ignore")
-    data = process_data(IN_DIR_PATH_ALL_DATABASE, EXTENSION_DATA, featurize)
+    process_data(featurize)
 
 
 if __name__ == '__main__':

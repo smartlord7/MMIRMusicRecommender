@@ -26,13 +26,13 @@ def statify(data):
     shp = data.shape
     axis = len(shp) - 1
 
-    mean = np.mean(data, axis=axis)
-    std = np.std(data, axis=axis)
-    skewness = stats.skew(data, axis=axis)
-    kurtosis = stats.kurtosis(data, axis=axis)
-    median = np.median(data, axis=axis)
-    max = np.max(data, axis=axis)
-    min = np.min(data, axis=axis)
+    mean = np.mean(data, axis=axis).astype(np.float64)
+    std = np.std(data, axis=axis).astype(np.float64)
+    skewness = stats.skew(data, axis=axis).astype(np.float64)
+    kurtosis = stats.kurtosis(data, axis=axis).astype(np.float64)
+    median = np.median(data, axis=axis).astype(np.float64)
+    max = np.max(data, axis=axis).astype(np.float64)
+    min = np.min(data, axis=axis).astype(np.float64)
 
     statified_data = np.concatenate((mean,
                                      std,
@@ -53,11 +53,11 @@ def featurize(data):
     spectral_flatness = statify(calc_flatness(data))
     spectral_rolloff = statify(calc_rolloff(data))
 
-    fundamental_frequency = statify(calc_fundamental_freq(data, 0, SAMPLING_RATE))
+    fundamental_frequency = statify(calc_fundamental_freq(data, 1, SAMPLING_RATE))
     rms = statify(calc_rms(data))
     zero_crossing_rate = statify(calc_zero_crossing_rate(data))
 
-    tempo = [calc_tempo(data)]
+    tempo = calc_tempo(data)
 
     features = np.concatenate((mfcc,
                                spectral_centroid,
