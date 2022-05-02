@@ -10,7 +10,7 @@ import numpy as np
 
 def test():
     """
-    Function used to test the implemented functions.
+    Function used to testing the implemented functions.
     """
     # --- Load file
     # fName = "--/Queries/MT0000414517.mp3"
