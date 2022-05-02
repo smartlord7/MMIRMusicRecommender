@@ -14,7 +14,7 @@ def calc_fundamental_freq(matrix, fmin, fmax):
     f = librosa.yin(y=matrix, fmin=fmin, fmax=fmax)
     f[f == fmax] = 0
 
-    return f.reshape(1, f.shape[0])
+    return f
 
 
 def calc_rms(matrix):

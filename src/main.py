@@ -12,7 +12,7 @@ def process_data(process_callback,
 
     data_files = os.listdir(dir_path)
     data_files.sort()
-    all_processed = np.zeros((len(data_files), N_COLS))
+    all_processed = np.empty((len(data_files), N_COLS))
     i = int()
     for data_file_name in data_files:
         if data_file_name.endswith(in_extension):

@@ -1,6 +1,5 @@
 import numpy as np
 from sklearn import preprocessing
-
 from const import *
 from features.misc import *
 from features.spectral import *
@@ -12,8 +11,6 @@ def normalize_min_max(matrix):
     """
     Given one matrix,this function will normalize it within the min and max values..
     :param matrix: The used matrix.
-    :param a: Min value
-    :param b: Max value
     :return: normalized matrix.
     """
     min_max_scaler = preprocessing.MinMaxScaler()
@@ -34,19 +31,18 @@ def statify(data):
     max_val = np.max(data, axis=axis)
     min_val = np.min(data, axis=axis)
 
-    statified_data = np.concatenate((mean,
-                                     std,
-                                     skewness,
-                                     kurtosis,
-                                     median,
-                                     max_val,
-                                     min_val))
+    if axis == 0:
+        array = np.array([mean, std, skewness, kurtosis, median, max_val, min_val])
+    else:
+        array = np.empty((data.shape[0], 7))
+        for i in range(data.shape[0]):
+            array[i, :] = [mean[i], std[i], skewness[i], kurtosis[i], median[i], max_val[i], min_val[i]]
 
-    return statified_data
+    return array.flatten()
 
 
 def featurize(data):
-    mfcc = statify(calc_mfcc(data))
+    mfcc = statify(calc_mfcc(data, N_MFCC))
     spectral_centroid = statify(calc_centroid(data))
     spectral_bandwidth = statify(calc_bandwidth(data))
     spectral_contrast = statify(calc_contrast(data))

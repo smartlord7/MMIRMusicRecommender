@@ -1,7 +1,7 @@
 FEATURE_DELIM = ","
 IN_PATH_ORIGINAL_FEATURES = "../data/features/default/top100_features.csv"
 OUT_PATH_ORIGINAL_FEATURES = "../out/features/default/top100_features_processed.csv"
-IN_DIR_PATH_ALL_DATABASE = "../data/database/all2/"
+IN_DIR_PATH_ALL_DATABASE = "../data/database/all/"
 OUT_PATH_ALL_FEATURES = "../out/features/calculated/all.csv"
 EXTENSION_DATA = ".mp3"
 EXTENSION_FEATURES = ".csv"

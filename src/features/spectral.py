@@ -1,14 +1,14 @@
 import librosa.feature as lf
 
 
-def calc_mfcc(matrix):
+def calc_mfcc(matrix, n):
     """
     Function used to calculate the MFCC.
     :param matrix: the given matrix.
     :param n: number of MFCCs to return.
     :return: the MFFC(s).
     """
-    return lf.mfcc(y=matrix)
+    return lf.mfcc(y=matrix, n_mfcc=n)
 
 
 def calc_centroid(matrix):
@@ -18,7 +18,7 @@ def calc_centroid(matrix):
     :return: the spectral centroid.
     """
 
-    return lf.spectral_centroid(y=matrix, sr=22050)
+    return lf.spectral_centroid(y=matrix)
 
 
 def calc_bandwidth(matrix):
