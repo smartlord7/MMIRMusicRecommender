@@ -31,22 +31,22 @@ def statify(data):
     skewness = stats.skew(data, axis=axis)
     kurtosis = stats.kurtosis(data, axis=axis)
     median = np.median(data, axis=axis)
-    max = np.max(data, axis=axis)
-    min = np.min(data, axis=axis)
+    max_val = np.max(data, axis=axis)
+    min_val = np.min(data, axis=axis)
 
     statified_data = np.concatenate((mean,
                                      std,
                                      skewness,
                                      kurtosis,
                                      median,
-                                     max,
-                                     min)).astype(np.float64)
+                                     max_val,
+                                     min_val))
 
     return statified_data
 
 
 def featurize(data):
-    mfcc = statify(calc_mfcc(data, N_MFCC))
+    mfcc = statify(calc_mfcc(data))
     spectral_centroid = statify(calc_centroid(data))
     spectral_bandwidth = statify(calc_bandwidth(data))
     spectral_contrast = statify(calc_contrast(data))

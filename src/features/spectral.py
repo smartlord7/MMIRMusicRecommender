@@ -1,14 +1,14 @@
 import librosa.feature as lf
 
 
-def calc_mfcc(matrix, n):
+def calc_mfcc(matrix):
     """
     Function used to calculate the MFCC.
     :param matrix: the given matrix.
     :param n: number of MFCCs to return.
     :return: the MFFC(s).
     """
-    return lf.mfcc(y=matrix, n_mfcc=n)
+    return lf.mfcc(y=matrix)
 
 
 def calc_centroid(matrix):
