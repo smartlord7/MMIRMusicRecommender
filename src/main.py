@@ -3,7 +3,7 @@ import warnings
 from mmir_pipeline.process import *
 from features.temporal import *
 from testing.features import *
-from mmir_pipeline.similarity_analysis import gen_distances
+from mmir_pipeline.similarity_analysis import gen_distances, rank_query_results
 
 
 def process_data(process_callback,
@@ -43,6 +43,12 @@ def main():
     for dist in TYPES_DISTANCES:
         gen_distances(dist)
         gen_distances(dist, IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES, default_features)
+
+    for query_path in os.listdir(PATH_QUERIES):
+        for dist in TYPES_DISTANCES:
+            results, dist = rank_query_results(query_path, OUT_PATH_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
+            for i in range(len(results)):
+                print("%d - %s (%.4f)" % (i + 1, results[i], dist[i]))
 
 
 if __name__ == '__main__':

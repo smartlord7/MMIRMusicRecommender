@@ -20,6 +20,20 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
     np.savetxt(file_name, distances, fmt="%f", delimiter=FEATURE_DELIM)
 
 
-def rank(query_file_path: str, distances_file_path: str, database_path: str, n=20):
-    database_files = os.listdir(database_path).sort()
+def rank_query_results(query_file_path: str, distances_file_path: str, database_path: str, n=20):
+    database_files = os.listdir(database_path)
+    database_files.sort()
+    query_name = query_file_path.split("/")[-1]
+
+    print("Ranking results for query %s based on distances in %s" % (query_name, distances_file_path))
+    query_index = database_files.index(query_name)
+    all_dist = np.genfromtxt(distances_file_path, delimiter=FEATURE_DELIM)
+    query_dist = all_dist[query_index]
+    sorted_dist_idx = np.argsort(query_dist)
+    top_n_distances_idx = sorted_dist_idx[: n]
+    top_n_results = np.take(database_files, top_n_distances_idx)
+    top_n_results_dist = np.take(query_dist, top_n_distances_idx)
+
+    return top_n_results, top_n_results_dist
+
 
