@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from os.path import isfile
 from metrics.similarity import self_dist
@@ -16,3 +18,8 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
 
     distances = self_dist(features_matrix, dist_func)
     np.savetxt(file_name, distances, fmt="%f", delimiter=FEATURE_DELIM)
+
+
+def rank(query_file_path: str, distances_file_path: str, database_path: str, n=20):
+    database_files = os.listdir(database_path).sort()
+
