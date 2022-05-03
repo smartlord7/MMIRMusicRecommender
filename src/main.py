@@ -1,14 +1,18 @@
 import os
 import warnings
-from util.process import *
+from mmir_pipeline.process import *
 from features.temporal import *
 from testing.features import *
+from mmir_pipeline.similarity_analysis import gen_distances
 
 
 def process_data(process_callback,
                  dir_path=IN_DIR_PATH_ALL_DATABASE,
                  out_path=OUT_PATH_ALL_FEATURES,
-                 in_extension=EXTENSION_DATA):
+                 in_extension=EXTENSION_MP3):
+
+    if isfile(out_path):
+        return
 
     data_files = os.listdir(dir_path)
     data_files.sort()
@@ -33,8 +37,11 @@ def main():
     """
 
     warnings.filterwarnings("ignore")
-    process_default_features(IN_PATH_ORIGINAL_FEATURES, OUT_PATH_ORIGINAL_FEATURES)
+    process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
     process_data(featurize)
+
+    for dist in TYPES_DISTANCES:
+        gen_distances(OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, dist)
 
 
 if __name__ == '__main__':

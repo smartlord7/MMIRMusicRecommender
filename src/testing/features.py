@@ -1,6 +1,8 @@
+from os.path import isfile
+
 import numpy as np
 from const import FEATURE_DELIM
-from util.process import normalize_min_max
+from mmir_pipeline.process import normalize_min_max
 
 
 def process_default_features(in_path, out_path):
@@ -10,6 +12,10 @@ def process_default_features(in_path, out_path):
     :param out_path: the output directory.
     :return: required values.
     """
+
+    if isfile(in_path):
+        return
+
     matrix = np.genfromtxt(in_path, delimiter=FEATURE_DELIM)
     values = matrix[1:, 1:matrix.shape[1] - 1]
 
