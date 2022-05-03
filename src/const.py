@@ -4,6 +4,7 @@ OUT_PATH_DEFAULT_FEATURES = "../out/features/default/top100_features_processed.c
 IN_DIR_PATH_ALL_DATABASE = "../data/database/all/"
 OUT_PATH_ALL_FEATURES = "../out/features/calculated/all.csv"
 OUT_PATH_DISTANCES = "../out/distances/"
+OUT_PATH_DEFAULT_DISTANCES = "../out/distances/default/"
 EXTENSION_MP3 = ".mp3"
 EXTENSION_CSV = ".csv"
 

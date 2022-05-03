@@ -37,11 +37,12 @@ def main():
     """
 
     warnings.filterwarnings("ignore")
-    process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
+    default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
     process_data(featurize)
 
     for dist in TYPES_DISTANCES:
-        gen_distances(OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, dist)
+        gen_distances(dist)
+        gen_distances(dist, IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES, default_features)
 
 
 if __name__ == '__main__':

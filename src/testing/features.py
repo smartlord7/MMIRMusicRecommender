@@ -13,11 +13,11 @@ def process_default_features(in_path, out_path):
     :return: required values.
     """
 
-    if isfile(in_path):
-        return
-
     matrix = np.genfromtxt(in_path, delimiter=FEATURE_DELIM)
     values = matrix[1:, 1:matrix.shape[1] - 1]
+
+    if isfile(in_path):
+        return values
 
     values = normalize_min_max(values)
     np.savetxt(out_path, values, fmt='%f', delimiter=FEATURE_DELIM)
