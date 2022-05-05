@@ -34,10 +34,57 @@ def process_data(process_callback,
     np.savetxt(out_path, all_processed, fmt='%f', delimiter=FEATURE_DELIM)
 
 
+def objective_ranking(querie):
+    with open(PATH_METADATA) as f:
+        metadata = f.readlines()
+        metadata = [x.split(",") for x in metadata]
+        l = []
+        querie = querie.strip(".mp3")
+        for i in range(1, 901):
+            model = metadata[i]
+            if model[0].strip("\"'") == querie:
+                for j in range(1, 901):
+                    count = 0
+                    current = metadata[j]
+                    if current[0].strip("\"'") != querie:
+                        # ARTIST
+                        if current[1].strip("\"'") == model[1].strip("\"'"):
+                            count += 1
+                        # GENRE
+                        genre = current[11].strip("\"'").split("; ")
+                        genre_2 = model[11].strip("\"'").split("; ")
+
+                        genre = set(list(map(lambda x: x.lower(), genre)))
+                        genre_2 = set(list(map(lambda x: x.lower(), genre_2)))
+
+                        count += len(genre.intersection(genre_2))
+
+                        # QUADRANT
+                        if current[3].strip("\n'") == model[3].strip("\n'"):
+                            count += 1
+                        # EMOTION
+                        emotion = set(current[9].strip("\"'").split("; "))
+
+                        emotion_2 = set(model[9].strip("\"'").split("; "))
+
+                        count += len(emotion.intersection(emotion_2))
+
+                    l.append(count)
+        print(l)
+
+
 def main():
     """
-    Main function.
-    """
+        Main function.
+        """
+    files = os.listdir(PATH_QUERIES)
+
+    count = 0
+    # Objective Ranking
+    for querie in files:
+        # while count<1:
+            objective_ranking(querie)
+        #    count+=1
 
     warnings.filterwarnings("ignore")
     default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
@@ -52,6 +99,8 @@ def main():
             results, dist = rank_query_results(query_path, OUT_PATH_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
             for i in range(len(results)):
                 print("%d - %s (%.4f)" % (i + 1, results[i], dist[i]))
+
+
 
 
 if __name__ == '__main__':
