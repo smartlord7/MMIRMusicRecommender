@@ -20,6 +20,9 @@ def normalize_min_max(matrix):
 
 
 def statify(data):
+    """
+    Given a feature,calculates its statistics.
+    """
     shp = data.shape
     axis = len(shp) - 1
 
@@ -42,6 +45,9 @@ def statify(data):
 
 
 def featurize(data):
+    """
+    Function that will calculate the features.
+    """
     mfcc = statify(calc_mfcc(data, N_MFCC))
     spectral_centroid = statify(calc_centroid(data))
     spectral_bandwidth = statify(calc_bandwidth(data))

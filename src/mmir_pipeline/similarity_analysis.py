@@ -7,6 +7,9 @@ from const import FEATURE_DELIM, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_PATH_
 
 
 def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_path: str = OUT_PATH_DISTANCES, features_matrix=None) -> None:
+    """
+    Generates all the distances given a file with all features.
+    """
     file_name = out_dir_path + dist_func + EXTENSION_CSV
     if isfile(file_name):
         return
@@ -21,6 +24,9 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
 
 
 def rank_query_results(query_file_path: str, distances_file_path: str, database_path: str, n=20):
+    """
+    Function used to calculate the ranking of the results.
+    """
     database_files = os.listdir(database_path)
     database_files.sort()
     query_name = query_file_path.split("/")[-1]

@@ -10,6 +10,9 @@ def process_data(process_callback,
                  dir_path=IN_DIR_PATH_ALL_DATABASE,
                  out_path=OUT_PATH_ALL_FEATURES,
                  in_extension=EXTENSION_MP3):
+    """
+    Function used to process the given data.
+    """
 
     if isfile(out_path):
         return
