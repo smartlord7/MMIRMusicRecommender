@@ -1,7 +1,7 @@
 import os
 import warnings
 from mmir_pipeline.process import *
-from features.temporal import *
+from features.librosa_wrap.temporal import *
 from testing.features import *
 from mmir_pipeline.similarity_analysis import gen_distances, rank_query_results
 

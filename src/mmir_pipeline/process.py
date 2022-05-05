@@ -1,9 +1,9 @@
 import numpy as np
 from sklearn import preprocessing
 from const import *
-from features.misc import *
-from features.spectral import *
-from features.temporal import *
+from features.librosa_wrap.misc import *
+from features.librosa_wrap.spectral import *
+from features.librosa_wrap.temporal import *
 from scipy import stats as stats
 
 
