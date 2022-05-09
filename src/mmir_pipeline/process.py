@@ -1,3 +1,6 @@
+import os
+from os.path import isfile
+
 import numpy as np
 from sklearn import preprocessing
 from const import *
@@ -73,3 +76,31 @@ def featurize(data):
                                tempo))
 
     return features
+
+
+def process_data(process_callback,
+                 dir_path=IN_DIR_PATH_ALL_DATABASE,
+                 out_path=OUT_PATH_ALL_FEATURES,
+                 in_extension=EXTENSION_MP3):
+    """
+    Function used to process the given data.
+    """
+
+    if isfile(out_path):
+        return
+
+    data_files = os.listdir(dir_path)
+    data_files.sort()
+    all_processed = np.empty((len(data_files), N_COLS))
+    i = int()
+
+    for data_file_name in data_files:
+        if data_file_name.endswith(in_extension):
+            print("[DEBUG] Processing %s..." % data_file_name)
+            data = librosa.load(dir_path + data_file_name, sr=SAMPLING_RATE, mono=IS_AUDIO_MODE_MONO)[0]
+            processed = process_callback(data)
+            all_processed[i] = processed
+            i += 1
+
+    all_processed = normalize_min_max(all_processed)
+    np.savetxt(out_path, all_processed, fmt='%f', delimiter=DELIMITER_FEATURE)

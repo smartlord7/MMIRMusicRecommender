@@ -1,122 +1,57 @@
-import os
 import warnings
 from mmir_pipeline.process import *
-from features.librosa_wrap.temporal import *
 from testing.features import *
-from mmir_pipeline.similarity_analysis import gen_distances, rank_query_results
+from mmir_pipeline.similarity_analysis import gen_distances, rank_similarity_analysis, objective_analysis
 
 
-def process_data(process_callback,
-                 dir_path=IN_DIR_PATH_ALL_DATABASE,
-                 out_path=OUT_PATH_ALL_FEATURES,
-                 in_extension=EXTENSION_MP3):
-    """
-    Function used to process the given data.
-    """
-
-    if isfile(out_path):
-        return
-
-    data_files = os.listdir(dir_path)
-    data_files.sort()
-    all_processed = np.empty((len(data_files), N_COLS))
-    i = int()
-    for data_file_name in data_files:
-        if data_file_name.endswith(in_extension):
-            print("Processing %s..." % data_file_name)
-            data = librosa.load(dir_path + data_file_name, sr=SAMPLING_RATE, mono=IS_AUDIO_MODE_MONO)[0]
-            processed = process_callback(data)
-            all_processed[i] = processed
-            i += 1
-
-    all_processed = normalize_min_max(all_processed)
-
-    np.savetxt(out_path, all_processed, fmt='%f', delimiter=DELIMITER_FEATURE)
-
-
-def objective_ranking(query, n=20):
-    with open(PATH_METADATA) as f:
-        metadata = [row.split(",") for row in f.readlines()]
-        size = len(metadata)
-        l = list()
-        query = query.strip(EXTENSION_MP3)
-
-        for i in range(1, size):
-            model = metadata[i]
-
-            if model[0].strip(WRAPPER_METADATA_ADJECTIVES) == query:
-                print("%s: %s" % (model[0], model[1]))
-
-                for j in range(1, size):
-                    count = 0
-                    current = metadata[j]
-
-                    if current[0].strip(WRAPPER_METADATA_ADJECTIVES) != query:
-
-                        # ARTIST
-                        if current[1].strip(WRAPPER_METADATA_ADJECTIVES) == model[1].strip(WRAPPER_METADATA_ADJECTIVES):
-                            count += 1
-
-                        # GENRE
-                        genre = current[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
-                        genre_2 = model[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
-
-                        genre = set(list(map(lambda x: x.lower(), genre)))
-                        genre_2 = set(list(map(lambda x: x.lower(), genre_2)))
-
-                        count += len(genre.intersection(genre_2))
-
-                        # QUADRANT
-                        if current[3].strip("\n'") == model[3].strip("\n'"):
-                            count += 1
-
-                        # EMOTION
-                        emotion = set(current[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
-
-                        emotion_2 = set(model[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
-
-                        count += len(emotion.intersection(emotion_2))
-
-                    else:
-                        count = -1
-
-                    l.append(count)
-
-        top_index = np.argsort(np.array(l))[len(l):len(l) - n:-1]
-
-        print("Top %d Recommendations: " % n)
-
-        counter = 1
-
-        for i in top_index:
-            print("%d - %s: %s by %s - Points %d" % (counter, metadata[i + 1][0], metadata[i + 1][2], metadata[i + 1][1], l[i]))
-            counter += 1
-
-
-def main():
-    """
-        Main function.
-        """
-    files = os.listdir(PATH_QUERIES)
-
-    count = 0
-    # Objective Ranking
-    for querie in files:
-        objective_ranking(querie)
-
+def setup():
     warnings.filterwarnings("ignore")
+    queries = os.listdir(PATH_QUERIES)
+
+    return queries
+
+
+def process():
     default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
+    process_data(featurize)
+
+    return default_features
+
+
+def generate_distances(default_features):
     process_data(featurize)
 
     for dist in TYPES_DISTANCES:
         gen_distances(dist)
         gen_distances(dist, IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES, default_features)
 
-    for query_path in os.listdir(PATH_QUERIES):
+
+def analyse_similarity(queries):
+    for query in queries:
+        results = objective_analysis(query=query)
+        print("Ranking results for query %s based on metadata" % query)
+
+        for i in range(len(results)):
+            curr = results[i]
+            print("%d - %s: %s by %s - Points %d" % (i + 1, curr[0], curr[1], curr[2], curr[3]))
+
         for dist in TYPES_DISTANCES:
-            results, dist = rank_query_results(query_path, OUT_PATH_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
+            print("Ranking results for query %s based on '%s' distanced features" % (query, dist))
+            results, dist = rank_similarity_analysis(query, OUT_PATH_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
             for i in range(len(results)):
                 print("%d - %s (%.4f)" % (i + 1, results[i], dist[i]))
+
+
+def main():
+    """
+        Main function.
+    """
+
+    queries = setup()
+    objective_analysis()
+    default_features = process()
+    generate_distances(default_features)
+    analyse_similarity(queries)
 
 
 if __name__ == '__main__':

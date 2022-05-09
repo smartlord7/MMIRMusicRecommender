@@ -3,7 +3,9 @@ import os
 import numpy as np
 from os.path import isfile
 from metrics.similarity import self_dist
-from const import DELIMITER_FEATURE, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES
+from const import DELIMITER_FEATURE, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, \
+    WRAPPER_METADATA_ADJECTIVES, DELIMITER_METADATA_ADJECTIVES, EXTENSION_MP3, DELIMITER_METADATA_PROPERTIES, \
+    PATH_METADATA, OUT_PATH_CONTEXT_SIMILARITY, DELIMITER_METADATA_SIMILARITY
 
 
 def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_path: str = OUT_PATH_DISTANCES, features_matrix=None) -> None:
@@ -14,7 +16,7 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
     if isfile(file_name):
         return
 
-    print("Calculating %s distances for %s ..." % (dist_func, in_path))
+    print("[DEBUG] Calculating %s distances for %s ..." % (dist_func, in_path))
     if features_matrix is None:
 
         features_matrix = np.genfromtxt(in_path, delimiter=DELIMITER_FEATURE)
@@ -23,7 +25,7 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
     np.savetxt(file_name, distances, fmt="%f", delimiter=DELIMITER_FEATURE)
 
 
-def rank_query_results(query_file_path: str, distances_file_path: str, database_path: str, n=20):
+def rank_similarity_analysis(query_file_path: str, distances_file_path: str, database_path: str, n=20):
     """
     Function used to calculate the ranking of the results.
     """
@@ -31,7 +33,6 @@ def rank_query_results(query_file_path: str, distances_file_path: str, database_
     database_files.sort()
     query_name = query_file_path.split("/")[-1]
 
-    print("Ranking results for query %s based on distances in %s" % (query_name, distances_file_path))
     query_index = database_files.index(query_name)
     all_dist = np.genfromtxt(distances_file_path, delimiter=DELIMITER_FEATURE)
     query_dist = all_dist[query_index]
@@ -43,3 +44,75 @@ def rank_query_results(query_file_path: str, distances_file_path: str, database_
     return top_n_results, top_n_results_dist
 
 
+def objective_analysis(in_path: str = PATH_METADATA, out_path: str = OUT_PATH_CONTEXT_SIMILARITY, query: str = None, n: int = 20):
+    if query and isfile(query):
+        return None
+
+    with open(in_path) as f:
+        metadata = [row.split(DELIMITER_METADATA_PROPERTIES) for row in f.readlines()]
+        size = len(metadata)
+        metadata = metadata[1: size]
+        points = list()
+
+        if query:
+            query = query.strip(EXTENSION_MP3)
+            print("[DEBUG] Calculating top %d ranking based on metadata of %s..." % (n, query))
+        else:
+            similarity_matrix = list()
+            print("[DEBUG] Calculating similarity matrix based on metadata...")
+
+        for row in metadata:
+            if not query or row[0].strip(WRAPPER_METADATA_ADJECTIVES) == query:
+                print("Calculating similarity row of %s: %s" % (row[0], row[1]))
+
+                for other_row in metadata:
+                    count = 0
+
+                    if not query or other_row[0].strip(WRAPPER_METADATA_ADJECTIVES) != query:
+
+                        # ARTIST
+                        if other_row[1].strip(WRAPPER_METADATA_ADJECTIVES) == row[1].strip(WRAPPER_METADATA_ADJECTIVES):
+                            count += 1
+
+                        # GENRE
+                        genre = other_row[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
+                        genre_2 = row[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
+
+                        genre = set(list(map(lambda x: x.lower(), genre)))
+                        genre_2 = set(list(map(lambda x: x.lower(), genre_2)))
+
+                        count += len(genre.intersection(genre_2))
+
+                        # QUADRANT
+                        if other_row[3].strip("\n'") == row[3].strip("\n'"):
+                            count += 1
+
+                        # EMOTION
+                        emotion = set(other_row[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
+                        emotion_2 = set(row[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
+
+                        count += len(emotion.intersection(emotion_2))
+
+                    else:
+                        count = -1
+
+                    points.append(count)
+
+            if not query:
+                similarity_matrix.append(points)
+                points = list()
+
+        if query:
+            top_index = np.argsort(np.array(points))[len(points):len(points) - n - 1:-1]
+            result = list()
+
+            for i in top_index:
+                result.append((metadata[i][0], metadata[i][2], metadata[i][1], points[i]))
+
+            return result
+
+        else:
+            similarity_matrix = np.array(similarity_matrix)
+            np.savetxt(out_path, similarity_matrix, fmt="%.f", delimiter=DELIMITER_METADATA_SIMILARITY)
+
+            return np.array(similarity_matrix)
