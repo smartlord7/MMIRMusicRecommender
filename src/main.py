@@ -34,22 +34,37 @@ def process_data(process_callback,
     np.savetxt(out_path, all_processed, fmt='%f', delimiter=FEATURE_DELIM)
 
 
-def objective_ranking(querie):
+def print_top(list, indexes, n=20):
+    print("Top 20 Recommendations: ")
+
+    for i in indexes:
+        print(list[i][2], " by ", list[i][1])
+
+    print()
+
+
+def objective_ranking(querie, n=20):
     with open(PATH_METADATA) as f:
         metadata = f.readlines()
         metadata = [x.split(",") for x in metadata]
         l = []
         querie = querie.strip(".mp3")
+
         for i in range(1, 901):
             model = metadata[i]
+
             if model[0].strip("\"'") == querie:
+
                 for j in range(1, 901):
                     count = 0
                     current = metadata[j]
+
                     if current[0].strip("\"'") != querie:
+
                         # ARTIST
                         if current[1].strip("\"'") == model[1].strip("\"'"):
                             count += 1
+
                         # GENRE
                         genre = current[11].strip("\"'").split("; ")
                         genre_2 = model[11].strip("\"'").split("; ")
@@ -62,6 +77,7 @@ def objective_ranking(querie):
                         # QUADRANT
                         if current[3].strip("\n'") == model[3].strip("\n'"):
                             count += 1
+
                         # EMOTION
                         emotion = set(current[9].strip("\"'").split("; "))
 
@@ -70,7 +86,9 @@ def objective_ranking(querie):
                         count += len(emotion.intersection(emotion_2))
 
                     l.append(count)
-        print(l)
+
+        top_index = sorted(range(len(l)), key=lambda i: l[i])[-20:]
+        print_top(metadata, top_index)
 
 
 def main():
@@ -82,9 +100,7 @@ def main():
     count = 0
     # Objective Ranking
     for querie in files:
-        # while count<1:
-            objective_ranking(querie)
-        #    count+=1
+        objective_ranking(querie)
 
     warnings.filterwarnings("ignore")
     default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
