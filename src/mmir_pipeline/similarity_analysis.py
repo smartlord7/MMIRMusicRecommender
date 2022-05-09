@@ -3,7 +3,7 @@ import os
 import numpy as np
 from os.path import isfile
 from metrics.similarity import self_dist
-from const import FEATURE_DELIM, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES
+from const import DELIMITER_FEATURE, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES
 
 
 def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_path: str = OUT_PATH_DISTANCES, features_matrix=None) -> None:
@@ -17,10 +17,10 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
     print("Calculating %s distances for %s ..." % (dist_func, in_path))
     if features_matrix is None:
 
-        features_matrix = np.genfromtxt(in_path, delimiter=FEATURE_DELIM)
+        features_matrix = np.genfromtxt(in_path, delimiter=DELIMITER_FEATURE)
 
     distances = self_dist(features_matrix, dist_func)
-    np.savetxt(file_name, distances, fmt="%f", delimiter=FEATURE_DELIM)
+    np.savetxt(file_name, distances, fmt="%f", delimiter=DELIMITER_FEATURE)
 
 
 def rank_query_results(query_file_path: str, distances_file_path: str, database_path: str, n=20):
@@ -33,7 +33,7 @@ def rank_query_results(query_file_path: str, distances_file_path: str, database_
 
     print("Ranking results for query %s based on distances in %s" % (query_name, distances_file_path))
     query_index = database_files.index(query_name)
-    all_dist = np.genfromtxt(distances_file_path, delimiter=FEATURE_DELIM)
+    all_dist = np.genfromtxt(distances_file_path, delimiter=DELIMITER_FEATURE)
     query_dist = all_dist[query_index]
     sorted_dist_idx = np.argsort(query_dist)
     top_n_distances_idx = sorted_dist_idx[: n]

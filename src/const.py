@@ -1,4 +1,6 @@
-FEATURE_DELIM = ","
+DELIMITER_FEATURE = ","
+DELIMITER_METADATA_ADJECTIVES = "; "
+WRAPPER_METADATA_ADJECTIVES = "\"'"
 IN_PATH_DEFAULT_FEATURES = "../data/features/default/top100_features.csv"
 OUT_PATH_DEFAULT_FEATURES = "../out/features/default/top100_features_processed.csv"
 IN_DIR_PATH_ALL_DATABASE = "../data/database/all/"

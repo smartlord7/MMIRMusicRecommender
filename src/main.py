@@ -31,36 +31,35 @@ def process_data(process_callback,
 
     all_processed = normalize_min_max(all_processed)
 
-    np.savetxt(out_path, all_processed, fmt='%f', delimiter=FEATURE_DELIM)
+    np.savetxt(out_path, all_processed, fmt='%f', delimiter=DELIMITER_FEATURE)
 
 
-def objective_ranking(querie, n=20):
+def objective_ranking(query, n=20):
     with open(PATH_METADATA) as f:
-        metadata = f.readlines()
+        metadata = [row.split(",") for row in f.readlines()]
         size = len(metadata)
-        metadata = [x.split(",") for x in metadata]
-        l = []
-        querie = querie.strip(".mp3")
+        l = list()
+        query = query.strip(EXTENSION_MP3)
 
         for i in range(1, size):
             model = metadata[i]
 
-            if model[0].strip("\"'") == querie:
+            if model[0].strip(WRAPPER_METADATA_ADJECTIVES) == query:
                 print("%s: %s" % (model[0], model[1]))
 
                 for j in range(1, size):
                     count = 0
                     current = metadata[j]
 
-                    if current[0].strip("\"'") != querie:
+                    if current[0].strip(WRAPPER_METADATA_ADJECTIVES) != query:
 
                         # ARTIST
-                        if current[1].strip("\"'") == model[1].strip("\"'"):
+                        if current[1].strip(WRAPPER_METADATA_ADJECTIVES) == model[1].strip(WRAPPER_METADATA_ADJECTIVES):
                             count += 1
 
                         # GENRE
-                        genre = current[11].strip("\"'").split("; ")
-                        genre_2 = model[11].strip("\"'").split("; ")
+                        genre = current[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
+                        genre_2 = model[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
 
                         genre = set(list(map(lambda x: x.lower(), genre)))
                         genre_2 = set(list(map(lambda x: x.lower(), genre_2)))
@@ -72,9 +71,9 @@ def objective_ranking(querie, n=20):
                             count += 1
 
                         # EMOTION
-                        emotion = set(current[9].strip("\"'").split("; "))
+                        emotion = set(current[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
 
-                        emotion_2 = set(model[9].strip("\"'").split("; "))
+                        emotion_2 = set(model[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
 
                         count += len(emotion.intersection(emotion_2))
 
@@ -90,7 +89,7 @@ def objective_ranking(querie, n=20):
         counter = 1
 
         for i in top_index:
-            print("%d - %s: %s by %s" % (counter, metadata[i + 1][0], metadata[i + 1][2], metadata[i + 1][1]))
+            print("%d - %s: %s by %s - Points %d" % (counter, metadata[i + 1][0], metadata[i + 1][2], metadata[i + 1][1], l[i]))
             counter += 1
 
 
