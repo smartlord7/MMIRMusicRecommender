@@ -78,6 +78,9 @@ def objective_ranking(querie, n=20):
 
                         count += len(emotion.intersection(emotion_2))
 
+                    else:
+                        count = -1
+
                     l.append(count)
 
         top_index = np.argsort(np.array(l))[len(l):len(l) - n:-1]
@@ -87,7 +90,7 @@ def objective_ranking(querie, n=20):
         counter = 1
 
         for i in top_index:
-            print("%d - %s: %s by %s" % (counter, metadata[i][0], metadata[i][2], metadata[i][1]))
+            print("%d - %s: %s by %s" % (counter, metadata[i + 1][0], metadata[i + 1][2], metadata[i + 1][1]))
             counter += 1
 
 
@@ -115,8 +118,6 @@ def main():
             results, dist = rank_query_results(query_path, OUT_PATH_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
             for i in range(len(results)):
                 print("%d - %s (%.4f)" % (i + 1, results[i], dist[i]))
-
-
 
 
 if __name__ == '__main__':
