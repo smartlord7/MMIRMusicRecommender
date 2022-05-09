@@ -34,28 +34,21 @@ def process_data(process_callback,
     np.savetxt(out_path, all_processed, fmt='%f', delimiter=FEATURE_DELIM)
 
 
-def print_top(list, indexes, n=20):
-    print("Top 20 Recommendations: ")
-
-    for i in indexes:
-        print(list[i][2], " by ", list[i][1])
-
-    print()
-
-
 def objective_ranking(querie, n=20):
     with open(PATH_METADATA) as f:
         metadata = f.readlines()
+        size = len(metadata)
         metadata = [x.split(",") for x in metadata]
         l = []
         querie = querie.strip(".mp3")
 
-        for i in range(1, 901):
+        for i in range(1, size):
             model = metadata[i]
 
             if model[0].strip("\"'") == querie:
+                print("%s: %s" % (model[0], model[1]))
 
-                for j in range(1, 901):
+                for j in range(1, size):
                     count = 0
                     current = metadata[j]
 
@@ -87,8 +80,15 @@ def objective_ranking(querie, n=20):
 
                     l.append(count)
 
-        top_index = sorted(range(len(l)), key=lambda i: l[i])[-20:]
-        print_top(metadata, top_index)
+        top_index = np.argsort(np.array(l))[len(l):len(l) - n:-1]
+
+        print("Top %d Recommendations: " % n)
+
+        counter = 1
+
+        for i in top_index:
+            print("%d - %s: %s by %s" % (counter, metadata[i][0], metadata[i][2], metadata[i][1]))
+            counter += 1
 
 
 def main():
