@@ -25,7 +25,7 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
     np.savetxt(file_name, distances, fmt="%f", delimiter=DELIMITER_FEATURE)
 
 
-def rank_similarity_analysis(query_file_path: str, distances_file_path: str, database_path: str, n=20):
+def rank_similarity_analysis(query_file_path: str, distances_file_path: str, database_path: str, n=21):
     """
     Function used to calculate the ranking of the results.
     """
@@ -45,7 +45,7 @@ def rank_similarity_analysis(query_file_path: str, distances_file_path: str, dat
 
 
 def objective_analysis(in_path: str = PATH_METADATA, out_path: str = OUT_PATH_CONTEXT_SIMILARITY, query: str = None, n: int = 20):
-    if query and isfile(query):
+    if not query and isfile(out_path):
         return None
 
     with open(in_path) as f:
@@ -116,3 +116,11 @@ def objective_analysis(in_path: str = PATH_METADATA, out_path: str = OUT_PATH_CO
             np.savetxt(out_path, similarity_matrix, fmt="%.f", delimiter=DELIMITER_METADATA_SIMILARITY)
 
             return np.array(similarity_matrix)
+
+
+def calc_precision(results1: list, results2: list):
+    set1 = set(results1)
+    set2 = set(results2)
+    intersection = set1.intersection(set2)
+
+    return len(intersection) / max(len(results1), len(results2)) * 100
