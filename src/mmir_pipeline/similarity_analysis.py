@@ -18,7 +18,6 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
 
     print("[DEBUG] Calculating %s distances for %s ..." % (dist_func, in_path))
     if features_matrix is None:
-
         features_matrix = np.genfromtxt(in_path, delimiter=DELIMITER_FEATURE)
 
     distances = self_dist(features_matrix, dist_func)

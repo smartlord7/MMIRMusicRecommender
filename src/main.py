@@ -24,7 +24,7 @@ def generate_distances(default_features):
 
     for dist in TYPES_DISTANCES:
         gen_distances(dist)
-        gen_distances(dist, IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES, default_features)
+        gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES, default_features)
 
 
 def analyse_similarity(queries):
@@ -39,7 +39,7 @@ def analyse_similarity(queries):
 
         for dist in TYPES_DISTANCES:
             print("Ranking results for query %s based on '%s' distanced features" % (query, dist))
-            results_features, dist = rank_similarity_analysis(query, OUT_PATH_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
+            results_features, dist = rank_similarity_analysis(query, OUT_PATH_DEFAULT_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
             results_features_ids = list()
             for i in range(len(results_features)):
                 results_features_ids.append(results_features[i].strip(EXTENSION_MP3))
