@@ -15,11 +15,11 @@ def process_default_features(in_path, out_path):
 
     matrix = np.genfromtxt(in_path, delimiter=DELIMITER_FEATURE)
     values = matrix[1:, 1:matrix.shape[1] - 1]
+    values = normalize_min_max(values)
 
     if isfile(in_path):
         return values
 
-    values = normalize_min_max(values)
     np.savetxt(out_path, values, fmt='%f', delimiter=DELIMITER_FEATURE)
 
     return values

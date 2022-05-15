@@ -62,7 +62,7 @@ def objective_analysis(in_path: str = PATH_METADATA, out_path: str = OUT_PATH_CO
 
         for row in metadata:
             if not query or row[0].strip(WRAPPER_METADATA_ADJECTIVES) == query:
-                print("Calculating similarity row of %s: %s" % (row[0], row[1]))
+                print("[DEBUG] Calculating similarity row of %s: %s" % (row[0], row[1]))
 
                 for other_row in metadata:
                     count = 0
