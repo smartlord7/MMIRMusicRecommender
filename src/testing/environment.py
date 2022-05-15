@@ -1,5 +1,4 @@
 import warnings
-
 import librosa as librosa
 import librosa.display
 import librosa.beat
@@ -10,15 +9,13 @@ import numpy as np
 
 def test():
     """
-    Function used to testing the implemented functions.
+    Method used to test the librosa library
     """
-    # --- Load file
-    # fName = "--/Queries/MT0000414517.mp3"
-    fName = "data/queries/MT0000202045.mp3"
+    file_name = "data/queries/MT0000202045.mp3"
     sr = 22050
     mono = True
     warnings.filterwarnings("ignore")
-    y, fs = librosa.load(fName, sr=sr, mono=mono)
+    y, fs = librosa.load(file_name, sr=sr, mono=mono)
     print(y.shape)
     print(fs)
 
