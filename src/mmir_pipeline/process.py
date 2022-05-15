@@ -1,18 +1,17 @@
 import os
-from os.path import isfile
-
 import numpy as np
-from sklearn import preprocessing
 from const import *
+from os.path import isfile
+from scipy import stats as stats
+from sklearn import preprocessing
 from features.librosa_wrap.misc import *
 from features.librosa_wrap.spectral import *
 from features.librosa_wrap.temporal import *
-from scipy import stats as stats
 
 
 def normalize_min_max(matrix):
     """
-    Given one matrix,this function will normalize it within the min and max values..
+    Function that normalizes the columns of a matrix based
     :param matrix: The used matrix.
     :return: normalized matrix.
     """
