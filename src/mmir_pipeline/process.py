@@ -5,7 +5,7 @@ from sklearn import preprocessing
 from features.librosa_wrap.temporal import *
 
 
-def normalize_min_max(matrix: np.ndarray):
+def normalize_min_max(matrix: np.ndarray) -> np.ndarray:
     """
     Function that normalizes the columns of a matrix based in the min-max normalization method.
     :param matrix: The matrix to normalize.
@@ -17,7 +17,8 @@ def normalize_min_max(matrix: np.ndarray):
     return matrix
 
 
-def statify(feature: np.ndarray, stats_functions: list):
+def statify(feature: np.ndarray,
+            stats_functions: list) -> np.ndarray:
     """
     Function that calculates a set of statistics over a given feature.
     :param feature: The feature to be statified.
@@ -41,7 +42,9 @@ def statify(feature: np.ndarray, stats_functions: list):
     return stat_feature.flatten()
 
 
-def featurize(data: np.ndarray, stats_functions: list, features_functions: list):
+def featurize(data: np.ndarray,
+              stats_functions: list,
+              features_functions: list) -> np.ndarray:
     """
     Function that calculates a given set of features over a piece of data.
     :param stats_functions: The functions used to compute a specific set of statistics of the feature in question.
@@ -68,7 +71,7 @@ def process_data(dir_path: str = IN_DIR_PATH_ALL_DATABASE,
                  out_path: str = OUT_PATH_ALL_FEATURES,
                  in_extension: str = EXTENSION_MP3,
                  stats_functions: list = FUNCTIONS_STATISTICS,
-                 features_functions: list = FUNCTIONS_FEATURES):
+                 features_functions: list = FUNCTIONS_FEATURES) -> None:
     """
     Function used to extract and output the statified features of all files with a certain extension in a specified folder
     :param dir_path: The path of the directory that contains the data to be processed.

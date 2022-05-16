@@ -4,7 +4,8 @@ from const import DELIMITER_FEATURE
 from mmir_pipeline.process import normalize_min_max
 
 
-def process_default_features(in_path: str, out_path: str):
+def process_default_features(in_path: str,
+                             out_path: str) -> np.ndarray:
     """
     Function used to normalize already computed features.
     :param in_path: The path of the .csv file that contains the features.

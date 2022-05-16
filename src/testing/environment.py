@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def test():
+def test() -> None:
     """
     Method used to test the librosa library
     """

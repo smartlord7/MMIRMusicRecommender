@@ -8,7 +8,10 @@ from const import DELIMITER_FEATURE, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_P
     PATH_METADATA, OUT_PATH_CONTEXT_SIMILARITY, DELIMITER_METADATA_SIMILARITY
 
 
-def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_path: str = OUT_PATH_DISTANCES, features_matrix=None) -> None:
+def gen_distances(dist_func: str,
+                  in_path: str = OUT_PATH_ALL_FEATURES,
+                  out_dir_path: str = OUT_PATH_DISTANCES,
+                  features_matrix: np.ndarray = None) -> None:
     """
     Generates all the distances given a file with all features.
     """
@@ -24,7 +27,10 @@ def gen_distances(dist_func: str, in_path: str = OUT_PATH_ALL_FEATURES, out_dir_
     np.savetxt(file_name, distances, fmt="%f", delimiter=DELIMITER_FEATURE)
 
 
-def rank_similarity_analysis(query_file_path: str, distances_file_path: str, database_path: str, n=21):
+def rank_similarity_analysis(query_file_path: str,
+                             distances_file_path: str,
+                             database_path: str,
+                             n=21):
     """
     Function used to calculate the ranking of the results.
     """
@@ -43,7 +49,10 @@ def rank_similarity_analysis(query_file_path: str, distances_file_path: str, dat
     return top_n_results, top_n_results_dist
 
 
-def objective_analysis(in_path: str = PATH_METADATA, out_path: str = OUT_PATH_CONTEXT_SIMILARITY, query: str = None, n: int = 20):
+def objective_analysis(in_path: str = PATH_METADATA,
+                       out_path: str = OUT_PATH_CONTEXT_SIMILARITY,
+                       query: str = None,
+                       n: int = 20):
     if not query and isfile(out_path):
         return None
 
@@ -117,7 +126,8 @@ def objective_analysis(in_path: str = PATH_METADATA, out_path: str = OUT_PATH_CO
             return np.array(similarity_matrix)
 
 
-def calc_precision(results1: list, results2: list):
+def calc_precision(results1: list,
+                   results2: list):
     set1 = set(results1)
     set2 = set(results2)
     intersection = set1.intersection(set2)
