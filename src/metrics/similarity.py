@@ -30,4 +30,3 @@ def self_dist(matrix: np.ndarray, type_metric: str) -> np.ndarray:
     Calculates the self distance of an array.
     """
     return pairwise_distances(matrix, metric=type_metric)
-

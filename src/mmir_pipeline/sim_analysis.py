@@ -1,5 +1,4 @@
 import os
-
 import numpy as np
 from os.path import isfile
 from metrics.similarity import self_dist
@@ -13,7 +12,12 @@ def gen_distances(dist_func: str,
                   out_dir_path: str = OUT_PATH_DISTANCES,
                   features_matrix: np.ndarray = None) -> None:
     """
-    Generates all the distances given a file with all features.
+    Function that Generates and logs the similarity matrix for a given feature matrix.
+    :param dist_func: The function used to compute the distance between feature arrays.
+    :param in_path: The path of the file that contains the feature matrix.
+    :param out_dir_path: The path of the file to which the distances matrix will be written into.
+    :param features_matrix:
+    :return: None
     """
     file_name = out_dir_path + dist_func + EXTENSION_CSV
     if isfile(file_name):
@@ -27,12 +31,17 @@ def gen_distances(dist_func: str,
     np.savetxt(file_name, distances, fmt="%f", delimiter=DELIMITER_FEATURE)
 
 
-def rank_similarity_analysis(query_file_path: str,
-                             distances_file_path: str,
-                             database_path: str,
-                             n=21):
+def rank_by_sim_analysis(query_file_path: str,
+                         distances_file_path: str,
+                         database_path: str,
+                         n=21) -> tuple:
     """
-    Function used to calculate the ranking of the results.
+    Function used to calculate the ranking of the results based on the similarity analysis of the query and the database.
+    :param query_file_path: The path of the file that contains the query data.
+    :param distances_file_path: The path of the file that contains the similarity matrix.
+    :param database_path: The path of the directory that contains the database objects.
+    :param n: Specifies the number of ordered results shown in the ranking.
+    :return: The top n results and correspondent distances.
     """
     database_files = os.listdir(database_path)
     database_files.sort()
@@ -52,7 +61,16 @@ def rank_similarity_analysis(query_file_path: str,
 def objective_analysis(in_path: str = PATH_METADATA,
                        out_path: str = OUT_PATH_CONTEXT_SIMILARITY,
                        query: str = None,
-                       n: int = 20):
+                       n: int = 20) -> list or np.ndarray:
+    """
+    Function used to perform the ranking of the top n results based on the context metadata or to calculate/log
+    the similarity matrix based on the same data.
+    :param in_path: The path of the file that contains all the metadata.
+    :param out_path: The path of the file to which the context-based similarity matrix will be written into.
+    :param query: The name of the query (MTXXXXX)
+    :param n: Specifies the number of ordered results shown in the ranking.
+    :return: A list containing the top n ranking results or the context-based similarity matrix.
+    """
     if not query and isfile(out_path):
         return None
 
@@ -123,11 +141,17 @@ def objective_analysis(in_path: str = PATH_METADATA,
             similarity_matrix = np.array(similarity_matrix)
             np.savetxt(out_path, similarity_matrix, fmt="%.f", delimiter=DELIMITER_METADATA_SIMILARITY)
 
-            return np.array(similarity_matrix)
+            return similarity_matrix
 
 
 def calc_precision(results1: list,
-                   results2: list):
+                   results2: list) -> float:
+    """
+    Function that calculates the precision between two sets of results: the retrieved and the relevant ones.
+    :param results1: The retrieved results.
+    :param results2: The relevant results.
+    :return:
+    """
     set1 = set(results1)
     set2 = set(results2)
     intersection = set1.intersection(set2)

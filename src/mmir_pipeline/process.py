@@ -75,7 +75,7 @@ def process_data(dir_path: str = IN_DIR_PATH_ALL_DATABASE,
     """
     Function used to extract and output the statified features of all files with a certain extension in a specified folder
     :param dir_path: The path of the directory that contains the data to be processed.
-    :param out_path: The path of the file to which the features' matrix will be written.
+    :param out_path: The path of the file to which the features' matrix will be written into.
     :param in_extension: The allowed extension of the data files.
     :param stats_functions: The functions used to compute a specific set of statistics of each multidimensional feature.
     :param features_functions:  The functions used to compute a specific set of features (spectral, temporal, ...) of the data in question.

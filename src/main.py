@@ -1,7 +1,7 @@
 import warnings
 from mmir_pipeline.process import *
 from testing.features import *
-from mmir_pipeline.sim_analysis import gen_distances, rank_similarity_analysis, objective_analysis, \
+from mmir_pipeline.sim_analysis import gen_distances, rank_by_sim_analysis, objective_analysis, \
     calc_precision
 
 
@@ -37,7 +37,7 @@ def analyse_similarity(queries):
 
         for dist in TYPES_DISTANCES:
             print("[DEBUG] Ranking results for query %s based on '%s' distanced features" % (query, dist))
-            results_features, dist = rank_similarity_analysis(query, OUT_PATH_DEFAULT_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
+            results_features, dist = rank_by_sim_analysis(query, OUT_PATH_DEFAULT_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
             results_features_ids = list()
             for i in range(len(results_features)):
                 results_features_ids.append(results_features[i].strip(EXTENSION_MP3))
