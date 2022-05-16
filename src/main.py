@@ -22,6 +22,7 @@ def process():
 def generate_distances(default_features):
     for dist in TYPES_DISTANCES:
         gen_distances(dist)
+        gen_distances(dist, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, default_features)
         gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES, default_features)
 
 
