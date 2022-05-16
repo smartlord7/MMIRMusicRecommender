@@ -1,7 +1,7 @@
 import warnings
 from mmir_pipeline.process import *
 from testing.features import *
-from mmir_pipeline.similarity_analysis import gen_distances, rank_similarity_analysis, objective_analysis, \
+from mmir_pipeline.sim_analysis import gen_distances, rank_similarity_analysis, objective_analysis, \
     calc_precision
 
 

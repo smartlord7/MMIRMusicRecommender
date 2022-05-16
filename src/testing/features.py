@@ -7,9 +7,9 @@ from mmir_pipeline.process import normalize_min_max
 def process_default_features(in_path: str, out_path: str):
     """
     Function used to normalize already computed features.
-    :param in_path: the path of the .csv file that contains the features.
-    :param out_path: the path of the file to which the normalized features will be wrriten.
-    :return: the normalized features values.
+    :param in_path: The path of the .csv file that contains the features.
+    :param out_path: The path of the file to which the normalized features will be writen.
+    :return: The normalized features values.
     """
 
     matrix = np.genfromtxt(in_path, delimiter=DELIMITER_FEATURE)

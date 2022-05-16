@@ -64,12 +64,19 @@ def featurize(data: np.ndarray, stats_functions: list, features_functions: list)
     return np.concatenate(features_array)
 
 
-def process_data(dir_path=IN_DIR_PATH_ALL_DATABASE,
-                 out_path=OUT_PATH_ALL_FEATURES,
-                 in_extension=EXTENSION_MP3,
-                 stats_functions=FUNCTIONS_STATISTICS, features_functions=FUNCTIONS_FEATURES):
+def process_data(dir_path: str = IN_DIR_PATH_ALL_DATABASE,
+                 out_path: str = OUT_PATH_ALL_FEATURES,
+                 in_extension: str = EXTENSION_MP3,
+                 stats_functions: list = FUNCTIONS_STATISTICS,
+                 features_functions: list = FUNCTIONS_FEATURES):
     """
-    Function used to process the given data.
+    Function used to extract and output the statified features of all files with a certain extension in a specified folder
+    :param dir_path: The path of the directory that contains the data to be processed.
+    :param out_path: The path of the file to which the features' matrix will be written.
+    :param in_extension: The allowed extension of the data files.
+    :param stats_functions: The functions used to compute a specific set of statistics of each multidimensional feature.
+    :param features_functions:  The functions used to compute a specific set of features (spectral, temporal, ...) of the data in question.
+    :return: None
     """
 
     if isfile(out_path):
