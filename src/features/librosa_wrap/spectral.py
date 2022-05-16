@@ -1,7 +1,9 @@
 import librosa.feature as lf
 
+N_MFCC = 13
 
-def calc_mfcc(matrix, n):
+
+def calc_mfcc(matrix, n=N_MFCC):
     """
     Function used to calculate the MFCC.
     :param matrix: the given matrix.

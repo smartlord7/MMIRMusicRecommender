@@ -14,7 +14,7 @@ def setup():
 
 def process():
     default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
-    process_data(featurize)
+    process_data()
 
     return default_features
 

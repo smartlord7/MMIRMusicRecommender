@@ -1,8 +1,12 @@
 import librosa
 import librosa.feature as lf
 
+SAMPLING_RATE = 22500
+MIN_YIN_FREQUENCY = 20
+MAX_YIN_FREQUENCY = SAMPLING_RATE / 2
 
-def calc_fundamental_freq(matrix, fmin, fmax):
+
+def calc_fundamental_freq(matrix, fmin=MIN_YIN_FREQUENCY, fmax=MAX_YIN_FREQUENCY):
     """
     Function used to get the fundamental frequency.
     :param matrix: the given matrix.

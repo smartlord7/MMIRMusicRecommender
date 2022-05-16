@@ -1,3 +1,9 @@
+import numpy as np
+from scipy.stats import stats
+from features.librosa_wrap.spectral import *
+from features.librosa_wrap.temporal import *
+from features.librosa_wrap.misc import *
+
 DELIMITER_FEATURE = ","
 DELIMITER_METADATA_SIMILARITY = ","
 DELIMITER_METADATA_PROPERTIES = ","
@@ -18,12 +24,12 @@ EXTENSION_CSV = ".csv"
 PATH_METADATA = "../data/database_info/panda_dataset_taffc_metadata.csv"
 
 TYPES_DISTANCES = ["euclidean", "manhattan", "cosine"]
+FUNCTIONS_STATISTICS = [np.mean, np.std, stats.skew, stats.kurtosis, np.median, np.max, np.min]
+FUNCTIONS_FEATURES = [calc_mfcc, calc_centroid, calc_bandwidth, calc_contrast,
+                      calc_flatness, calc_rolloff, calc_fundamental_freq, calc_rms,
+                      calc_zero_crossing_rate, calc_tempo]
 
 SAMPLING_RATE = 22500
 IS_AUDIO_MODE_MONO = True
 
-N_MFCC = 13
-MIN_YIN_FREQUENCY = 20
-MAX_YIN_FREQUENCY = SAMPLING_RATE / 2
-
-N_COLS = 190
+N_FEATURE_ARRAY_COLS = 190

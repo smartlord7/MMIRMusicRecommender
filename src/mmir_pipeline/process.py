@@ -1,19 +1,15 @@
 import os
-import numpy as np
 from const import *
 from os.path import isfile
-from scipy import stats as stats
 from sklearn import preprocessing
-from features.librosa_wrap.misc import *
-from features.librosa_wrap.spectral import *
 from features.librosa_wrap.temporal import *
 
 
-def normalize_min_max(matrix):
+def normalize_min_max(matrix: np.ndarray):
     """
-    Function that normalizes the columns of a matrix based
-    :param matrix: The used matrix.
-    :return: normalized matrix.
+    Function that normalizes the columns of a matrix based in the min-max normalization method.
+    :param matrix: The matrix to normalize.
+    :return: The normalized matrix.
     """
     min_max_scaler = preprocessing.MinMaxScaler()
     matrix = min_max_scaler.fit_transform(matrix)
@@ -21,66 +17,57 @@ def normalize_min_max(matrix):
     return matrix
 
 
-def statify(data):
+def statify(feature: np.ndarray, stats_functions: list):
     """
-    Given a feature,calculates its statistics.
+    Function that calculates a set of statistics over a given feature.
+    :param feature: The feature to be statified.
+    :param stats_functions: The functions used to compute a specific set of statistics of the feature in question.
+    :return: The statified feature.
     """
-    shp = data.shape
-    axis = len(shp) - 1
+    shp = feature.shape
+    axs = len(shp) - 1
+    stats_list = [stat_function(feature, axis=axs) for stat_function in stats_functions]
 
-    mean = np.mean(data, axis=axis)
-    std = np.std(data, axis=axis)
-    skewness = stats.skew(data, axis=axis)
-    kurtosis = stats.kurtosis(data, axis=axis)
-    median = np.median(data, axis=axis)
-    max_val = np.max(data, axis=axis)
-    min_val = np.min(data, axis=axis)
-
-    if axis == 0:
-        array = np.array([mean, std, skewness, kurtosis, median, max_val, min_val])
+    if axs == 0:
+        stat_feature = np.array(stats_list)
     else:
-        array = np.empty((data.shape[0], 7))
-        for i in range(data.shape[0]):
-            array[i, :] = [mean[i], std[i], skewness[i], kurtosis[i], median[i], max_val[i], min_val[i]]
+        stat_feature = np.empty((shp[0], len(stats_functions)))
+        for i in range(shp[0]):
+            row_stats = list()
+            for j in range(len(stats_list)):
+                row_stats.append(stats_list[j][i])
+            stat_feature[i, :] = row_stats
 
-    return array.flatten()
+    return stat_feature.flatten()
 
 
-def featurize(data):
+def featurize(data: np.ndarray, stats_functions: list, features_functions: list):
     """
-    Function that will calculate the features.
+    Function that calculates a given set of features over a piece of data.
+    :param stats_functions: The functions used to compute a specific set of statistics of the feature in question.
+    :param features_functions: The functions used to compute a specific set of features (spectral, temporal, ...) of the data in question.
+    :param data: The data to be featurized.
+    :return: The featurized data.
     """
-    mfcc = statify(calc_mfcc(data, N_MFCC))
-    spectral_centroid = statify(calc_centroid(data))
-    spectral_bandwidth = statify(calc_bandwidth(data))
-    spectral_contrast = statify(calc_contrast(data))
-    spectral_flatness = statify(calc_flatness(data))
-    spectral_rolloff = statify(calc_rolloff(data))
 
-    fundamental_frequency = statify(calc_fundamental_freq(data, MIN_YIN_FREQUENCY, MAX_YIN_FREQUENCY))
-    rms = statify(calc_rms(data))
-    zero_crossing_rate = statify(calc_zero_crossing_rate(data))
+    features_array = list()
 
-    tempo = calc_tempo(data)
+    for feature_func in features_functions:
+        feature_array = feature_func(data)
+        shp = feature_array.shape
 
-    features = np.concatenate((mfcc,
-                               spectral_centroid,
-                               spectral_bandwidth,
-                               spectral_contrast,
-                               spectral_flatness,
-                               spectral_rolloff,
-                               fundamental_frequency,
-                               rms,
-                               zero_crossing_rate,
-                               tempo))
+        if shp[0] > 1 or len(shp) > 1:
+            feature_array = statify(feature_array, stats_functions)
 
-    return features
+        features_array.append(feature_array)
+
+    return np.concatenate(features_array)
 
 
-def process_data(process_callback,
-                 dir_path=IN_DIR_PATH_ALL_DATABASE,
+def process_data(dir_path=IN_DIR_PATH_ALL_DATABASE,
                  out_path=OUT_PATH_ALL_FEATURES,
-                 in_extension=EXTENSION_MP3):
+                 in_extension=EXTENSION_MP3,
+                 stats_functions=FUNCTIONS_STATISTICS, features_functions=FUNCTIONS_FEATURES):
     """
     Function used to process the given data.
     """
@@ -90,14 +77,14 @@ def process_data(process_callback,
 
     data_files = os.listdir(dir_path)
     data_files.sort()
-    all_processed = np.empty((len(data_files), N_COLS))
+    all_processed = np.empty((len(data_files), N_FEATURE_ARRAY_COLS))
     i = int()
 
     for data_file_name in data_files:
         if data_file_name.endswith(in_extension):
             print("[DEBUG] Processing %s..." % data_file_name)
             data = librosa.load(dir_path + data_file_name, sr=SAMPLING_RATE, mono=IS_AUDIO_MODE_MONO)[0]
-            processed = process_callback(data)
+            processed = featurize(data, stats_functions, features_functions)
             all_processed[i] = processed
             i += 1
 
