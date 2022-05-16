@@ -4,7 +4,8 @@ from os.path import isfile
 from metrics.similarity import self_dist
 from const import DELIMITER_FEATURE, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, \
     WRAPPER_METADATA_ADJECTIVES, DELIMITER_METADATA_ADJECTIVES, EXTENSION_MP3, DELIMITER_METADATA_PROPERTIES, \
-    PATH_METADATA, OUT_PATH_CONTEXT_SIMILARITY, DELIMITER_METADATA_SIMILARITY
+    PATH_METADATA, OUT_PATH_CONTEXT_SIMILARITY, DELIMITER_METADATA_SIMILARITY, COL_METADATA_MUSIC_ID, \
+    COL_METADATA_ARTIST, COL_METADATA_GENRE, COL_METADATA_QUADRANT, COL_METADATA_EMOTIONS
 
 
 def gen_distances(dist_func: str,
@@ -34,7 +35,7 @@ def gen_distances(dist_func: str,
 def rank_by_sim_analysis(query_file_path: str,
                          distances_file_path: str,
                          database_path: str,
-                         n=21) -> tuple:
+                         n:int = 21) -> tuple:
     """
     Function used to calculate the ranking of the results based on the similarity analysis of the query and the database.
     :param query_file_path: The path of the file that contains the query data.
@@ -48,8 +49,8 @@ def rank_by_sim_analysis(query_file_path: str,
     query_name = query_file_path.split("/")[-1]
 
     query_index = database_files.index(query_name)
-    all_dist = np.genfromtxt(distances_file_path, delimiter=DELIMITER_FEATURE)
-    query_dist = all_dist[query_index]
+    sim_matrix = np.genfromtxt(distances_file_path, delimiter=DELIMITER_FEATURE)
+    query_dist = sim_matrix[query_index]
     sorted_dist_idx = np.argsort(query_dist)
     top_n_distances_idx = sorted_dist_idx[: n]
     top_n_results = np.take(database_files, top_n_distances_idx)
@@ -88,37 +89,33 @@ def objective_analysis(in_path: str = PATH_METADATA,
             print("[DEBUG] Calculating similarity matrix based on metadata...")
 
         for row in metadata:
-            if not query or row[0].strip(WRAPPER_METADATA_ADJECTIVES) == query:
+            if not query or row[COL_METADATA_MUSIC_ID].strip(WRAPPER_METADATA_ADJECTIVES) == query:
                 print("[DEBUG] Calculating similarity row of %s: %s" % (row[0], row[1]))
 
                 for other_row in metadata:
-                    count = 0
+                    count = int()
 
-                    if not query or other_row[0].strip(WRAPPER_METADATA_ADJECTIVES) != query:
+                    if not query or other_row[COL_METADATA_MUSIC_ID].strip(WRAPPER_METADATA_ADJECTIVES) != query:
 
                         # ARTIST
-                        if other_row[1].strip(WRAPPER_METADATA_ADJECTIVES) == row[1].strip(WRAPPER_METADATA_ADJECTIVES):
-                            count += 1
-
-                        # GENRE
-                        genre = other_row[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
-                        genre_2 = row[11].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
-
-                        genre = set(list(map(lambda x: x.lower(), genre)))
-                        genre_2 = set(list(map(lambda x: x.lower(), genre_2)))
-
-                        count += len(genre.intersection(genre_2))
+                        count += int(other_row[COL_METADATA_ARTIST].strip(WRAPPER_METADATA_ADJECTIVES) == row[COL_METADATA_ARTIST].strip(WRAPPER_METADATA_ADJECTIVES))
 
                         # QUADRANT
-                        if other_row[3].strip("\n'") == row[3].strip("\n'"):
-                            count += 1
+                        count += int(other_row[COL_METADATA_QUADRANT].strip("\n'") == row[COL_METADATA_QUADRANT].strip("\n'"))
 
                         # EMOTION
-                        emotion = set(other_row[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
-                        emotion_2 = set(row[9].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
+                        query_emotion = set(row[COL_METADATA_EMOTIONS].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
+                        emotion = set(other_row[COL_METADATA_EMOTIONS].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES))
+                        count += len(emotion.intersection(query_emotion))
 
-                        count += len(emotion.intersection(emotion_2))
+                        # GENRE
+                        query_genre = row[COL_METADATA_GENRE].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
+                        genre = other_row[COL_METADATA_GENRE].strip(WRAPPER_METADATA_ADJECTIVES).split(DELIMITER_METADATA_ADJECTIVES)
 
+                        query_genre = set(list(map(lambda x: x.lower(), query_genre)))
+                        genre = set(list(map(lambda x: x.lower(), genre)))
+
+                        count += len(genre.intersection(query_genre))
                     else:
                         count = -1
 
