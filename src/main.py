@@ -1,8 +1,19 @@
 import warnings
+
+from scipy.stats import stats
+from features.librosa_wrap.misc import *
+from features.librosa_wrap.spectral import *
+from features.librosa_wrap.temporal import *
 from mmir_pipeline.process import *
 from testing.features import *
 from mmir_pipeline.sim_analysis import gen_distances, rank_by_sim_analysis, objective_analysis, \
     calc_precision
+
+
+FUNCTIONS_STATISTICS = [np.mean, np.std, stats.skew, stats.kurtosis, np.median, np.max, np.min]
+FUNCTIONS_FEATURES = [calc_mfcc, calc_centroid, calc_bandwidth, calc_contrast,
+                      calc_flatness, calc_rolloff, calc_fundamental_freq, calc_rms,
+                      calc_zero_crossing_rate, calc_tempo]
 
 
 def setup():
@@ -14,7 +25,7 @@ def setup():
 
 def process():
     default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
-    process_data()
+    process_data(FUNCTIONS_STATISTICS, FUNCTIONS_FEATURES)
 
     return default_features
 

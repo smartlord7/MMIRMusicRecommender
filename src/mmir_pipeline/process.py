@@ -1,8 +1,9 @@
 import os
+import librosa
+import numpy as np
 from const import *
 from os.path import isfile
 from sklearn import preprocessing
-from features.librosa_wrap.temporal import *
 
 
 def normalize_min_max(matrix: np.ndarray) -> np.ndarray:
@@ -67,11 +68,11 @@ def featurize(data: np.ndarray,
     return np.concatenate(features_array)
 
 
-def process_data(dir_path: str = IN_DIR_PATH_ALL_DATABASE,
+def process_data(stats_functions: list,
+                 features_functions: list,
+                 dir_path: str = IN_DIR_PATH_ALL_DATABASE,
                  out_path: str = OUT_PATH_ALL_FEATURES,
-                 in_extension: str = EXTENSION_MP3,
-                 stats_functions: list = FUNCTIONS_STATISTICS,
-                 features_functions: list = FUNCTIONS_FEATURES) -> None:
+                 in_extension: str = EXTENSION_MP3) -> None:
     """
     Function used to extract and output the statified features of all files with a certain extension in a specified folder
     :param dir_path: The path of the directory that contains the data to be processed.
