@@ -1,7 +1,7 @@
 import numpy as np
 from os.path import isfile
 from const import DELIMITER_FEATURE
-from mmir_pipeline.process import normalize_min_max
+from pipeline.process import normalize_min_max
 
 
 def process_default_features(in_path: str,

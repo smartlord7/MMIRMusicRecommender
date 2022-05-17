@@ -9,7 +9,7 @@ import numpy as np
 
 def test() -> None:
     """
-    Method used to test the librosa library
+    Method used to testing the librosa library
     """
     file_name = "data/queries/MT0000202045.mp3"
     sr = 22050

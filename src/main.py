@@ -4,9 +4,9 @@ from scipy.stats import stats
 from features.librosa_wrap.misc import *
 from features.librosa_wrap.spectral import *
 from features.librosa_wrap.temporal import *
-from mmir_pipeline.process import *
+from pipeline.process import *
 from testing.features import *
-from mmir_pipeline.sim_analysis import gen_distances, rank_by_sim_analysis, objective_analysis, \
+from pipeline.sim_analysis import gen_distances, rank_by_sim_analysis, objective_analysis, \
     calc_precision
 
 

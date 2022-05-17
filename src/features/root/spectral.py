@@ -61,8 +61,22 @@ def calc_centroid(data: np.ndarray,
     return centroids
 
 
-def calc_bandwidth():
-    pass
+def calc_bandwidth(data: np.ndarray,
+                   order: int = 2,
+                   win_type: str = "hann",
+                   win_length: int = 2048,
+                   hop_size: float = 23.22,
+                   sr: float = 22050):
+    centroids = calc_centroid(data, win_type, win_length, hop_size, sr)
+    framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
+    magnitudes = np.abs(np.fft.fft(framed_w_window))
+    frequencies = np.fft.fftfreq(win_length)[None, ...]
+    bandwidths = np.empty(framed_w_window.shape[0])
+
+    for i in range(len(framed_w_window)):
+        bandwidths[i] = np.sum(magnitudes[i] * (frequencies - centroids[i]) ** order) ** 1 / order
+
+    return bandwidths
 
 
 def calc_contrast():
