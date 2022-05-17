@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
+from scipy.signal import get_window
 
 
 def normalize(data):
@@ -21,6 +22,18 @@ def frame(data,
         frames[n] = data[n * len_frame:n * len_frame + win_length]
 
     return frames
+
+
+def windowed_frame(data: np.ndarray,
+                   win_type: str = "hann",
+                   win_length: int = 2048,
+                   hop_size: float = 23.22,
+                   sr: float = 22050):
+    framed = frame(data, win_length, hop_size, sr)
+    window = get_window(win_type, win_length, fftbins=True)
+    framed_w_window = (framed * window)
+
+    return framed_w_window
 
 
 def power(data):

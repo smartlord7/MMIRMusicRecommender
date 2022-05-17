@@ -1,6 +1,5 @@
 import scipy.fftpack
-from testing.util import *
-from scipy.signal import get_window
+from features.root.util import *
 
 
 def calc_mfcc(data: np.ndarray,
@@ -11,9 +10,7 @@ def calc_mfcc(data: np.ndarray,
               debug: bool = False):
 
     normalized = normalize(data)
-    framed = frame(normalized, win_length, hop_size, sr)
-    window = get_window(win_type, win_length, fftbins=True)
-    framed_w_window = (framed * window).T
+    framed_w_window = windowed_frame(normalized, win_type, win_length, hop_size, sr).T
     frames_fft = np.empty((int(1 + win_length // 2), framed_w_window.shape[1]), dtype=np.complex64, order='F')
 
     for n in range(frames_fft.shape[1]):
@@ -50,8 +47,18 @@ def calc_mfcc(data: np.ndarray,
     return mfcc
 
 
-def calc_centroid():
-    pass
+def calc_centroid(data: np.ndarray,
+                  win_type: str = "hann",
+                  win_length: int = 2048,
+                  hop_size: float = 23.22,
+                  sr: float = 22050):
+
+    framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
+    magnitudes = np.abs(np.fft.fft(framed_w_window))
+    freq = np.fft.fftfreq(win_length)[None, ...]
+    centroids = np.sum(freq * magnitudes, axis=1) / np.sum(magnitudes, axis=1)
+
+    return centroids
 
 
 def calc_bandwidth():

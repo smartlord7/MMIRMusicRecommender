@@ -1,6 +1,6 @@
 import sounddevice as sd
 from scipy.io import wavfile
-from testing.spectral import calc_mfcc
+from features.root.spectral import calc_mfcc
 
 
 def main():
