@@ -85,3 +85,10 @@ def dct(n, length):
         dct_values[i, :] = np.cos(i * samples) * np.sqrt(2.0 / length)
 
     return dct_values
+
+
+def parabolic(f, x):
+    xv = 1 / 2. * (f[x - 1] - f[x + 1]) / (f[x - 1] - 2 * f[x] + f[x + 1]) + x
+    yv = f[x] - 1 / 4. * (f[x - 1] - f[x + 1]) * (xv - x)
+
+    return xv, yv

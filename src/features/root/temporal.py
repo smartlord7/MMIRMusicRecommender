@@ -1,10 +1,29 @@
 import numpy as np
+import scipy.signal
+from testing.util import windowed_frame, parabolic
 
-from testing.util import windowed_frame
 
+def calc_fundamental_freq(data: np.ndarray,
+                          win_type: str = "hann",
+                          win_length: int = 2048,
+                          hop_size: float = 23.22,
+                          sr: float = 22050):
 
-def calc_fundamental_freq():
-    pass
+    framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
+    f0 = np.empty((framed_w_window.shape[0]))
+    i = int()
+
+    for frame in framed_w_window:
+        corr = scipy.signal.convolve(frame, frame, mode='full')
+        corr = corr[len(corr) // 2:]
+        d = np.diff(corr)
+        start = np.nonzero(d > 0)[0][0]
+        peak = np.argmax(corr[start:]) + start
+        px, py = parabolic(corr, peak)
+        f0[i] = sr / px
+        i += 1
+
+    return f0
 
 
 def calc_rms(data: np.ndarray,
@@ -12,7 +31,6 @@ def calc_rms(data: np.ndarray,
              win_length: int = 2048,
              hop_size: float = 23.22,
              sr: float = 22050):
-
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     squared = np.sum(framed_w_window ** 2, axis=1) ** (1 / 2)
     rms = squared / framed_w_window.shape[1]
