@@ -1,7 +1,7 @@
 import sounddevice as sd
 from scipy.io import wavfile
 from testing.spectral import calc_mfcc, calc_centroid, calc_bandwidth, calc_flatness, calc_roll_off
-from testing.temporal import calc_zero_crossing_rate
+from testing.temporal import calc_zero_crossing_rate, calc_rms
 
 
 def main():
@@ -14,6 +14,7 @@ def main():
     flatness = calc_flatness(audio)
     roll_off = calc_roll_off(audio)
     zero_crossing_rate = calc_zero_crossing_rate(audio)
+    rms = calc_rms(audio)
 
 
 if __name__ == "__main__":
