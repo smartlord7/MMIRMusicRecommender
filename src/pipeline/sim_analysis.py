@@ -90,7 +90,7 @@ def objective_analysis(in_path: str = PATH_METADATA,
 
         for row in metadata:
             if not query or row[COL_METADATA_MUSIC_ID].strip(WRAPPER_METADATA_ADJECTIVES) == query:
-                print("[DEBUG] Calculating similarity row of %s: %s" % (row[0], row[1]))
+                print("[DEBUG] Calculating context similarity row of %s: %s" % (row[0], row[1]))
 
                 for other_row in metadata:
                     count = int()

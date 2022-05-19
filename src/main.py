@@ -45,7 +45,7 @@ def analyse_similarity(queries):
 
         for i in range(len(results_obj)):
             curr = results_obj[i]
-            print("%d - %s: %s by %s - Points %d" % (i + 1, curr[0], curr[1], curr[2], curr[3]))
+            print("%d - %s: %d" % (i + 1, curr[0], curr[3]))
 
         for dist in TYPES_DISTANCES:
             print("[DEBUG] Ranking results for query %s based on '%s' distanced features" % (query, dist))
