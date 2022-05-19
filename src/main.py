@@ -14,6 +14,10 @@ FUNCTIONS_FEATURES = [calc_mfcc, calc_centroid, calc_bandwidth, calc_contrast,
 
 
 def setup():
+    """
+    Setup function.
+    :return: The queries.
+    """
     warnings.filterwarnings("ignore")
     queries = os.listdir(PATH_QUERIES)
 
@@ -21,6 +25,10 @@ def setup():
 
 
 def process():
+    """
+    Function used to process data.
+    :return: the default features.
+    """
     default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
     process_data(FUNCTIONS_STATISTICS, FUNCTIONS_FEATURES)
 
@@ -28,6 +36,11 @@ def process():
 
 
 def generate_distances(default_features):
+    """
+    Function used to generate the distances.
+    :param default_features: the default features.
+    :return:
+    """
     for dist in TYPES_DISTANCES:
         gen_distances(dist)
         gen_distances(dist, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, default_features)
@@ -35,6 +48,11 @@ def generate_distances(default_features):
 
 
 def analyse_similarity(queries):
+    """
+    Function used to analise the similarities.
+    :param queries: are the queries to be compared.
+    :return:
+    """
     for query in queries:
         results_obj = objective_analysis(query=query)
         results_obj_ids = list(map(lambda x: x[0], results_obj))

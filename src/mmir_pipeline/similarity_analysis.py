@@ -118,6 +118,7 @@ def objective_analysis(in_path: str = PATH_METADATA, out_path: str = OUT_PATH_CO
 
 
 def calc_precision(results1: list, results2: list):
+    
     set1 = set(results1)
     set2 = set(results2)
     intersection = set1.intersection(set2)

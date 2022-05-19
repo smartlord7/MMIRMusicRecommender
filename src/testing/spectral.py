@@ -8,7 +8,16 @@ def calc_mfcc(data: np.ndarray,
               hop_size: float = 23.22,
               sr: float = 22050,
               debug: bool = False):
-
+    """
+    Function used to calculate the MFCC.
+    :param data: is the given data.
+    :param win_type: is the window type.
+    :param win_length: is the window length.
+    :param hop_size: is the hop size.
+    :param sr:
+    :param debug: used to debug.
+    :return: the MFCC.
+    """
     normalized = normalize(data)
     framed_w_window = windowed_frame(normalized, win_type, win_length, hop_size, sr).T
     frames_fft = np.empty((int(1 + win_length // 2), framed_w_window.shape[1]), dtype=np.complex64, order='F')
@@ -52,7 +61,15 @@ def calc_centroid(data: np.ndarray,
                   win_length: int = 2048,
                   hop_size: float = 23.22,
                   sr: float = 22050):
-
+    """
+    Function used to calculate the centroid.
+    :param data: is the given data.
+    :param win_type: is the window type.
+    :param win_length: is the window length.
+    :param hop_size: is the hop size.
+    :param sr:
+    :return: the centroid.
+    """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     magnitudes = np.abs(np.fft.fft(framed_w_window))
     freq = np.fft.fftfreq(win_length)[None, ...]
@@ -67,7 +84,16 @@ def calc_bandwidth(data: np.ndarray,
                    win_length: int = 2048,
                    hop_size: float = 23.22,
                    sr: float = 22050):
-
+    """
+    Function used to calculate the bandwidth.
+    :param data: is the given data.
+    :param order: is the bandwidth order.
+    :param win_type: is the window type.
+    :param win_length: is the window length.
+    :param hop_size: is the hop size.
+    :param sr:
+    :return: the bandwidth.
+    """
     centroids = calc_centroid(data, win_type, win_length, hop_size, sr)
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     magnitudes = np.abs(np.fft.fft(framed_w_window))
@@ -81,6 +107,10 @@ def calc_bandwidth(data: np.ndarray,
 
 
 def calc_contrast():
+    """
+    Function used to calculate the contrast.
+    :return: the contrast.
+    """
     pass
 
 
@@ -89,7 +119,15 @@ def calc_flatness(data: np.ndarray,
                   win_length: int = 2048,
                   hop_size: float = 23.22,
                   sr: float = 22050):
-
+    """
+    Function used to calculate the flatness.
+    :param data: is the given data.
+    :param win_type: is the window type.
+    :param win_length: is the window length
+    :param hop_size: is the hop size
+    :param sr:
+    :return: the flatness.
+    """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     magnitudes = np.abs(np.fft.fft(framed_w_window))
     l = len(magnitudes)
@@ -108,7 +146,16 @@ def calc_roll_off(data: np.ndarray,
                   win_length: int = 2048,
                   hop_size: float = 23.22,
                   sr: float = 22050):
-
+    """
+    Function used to calculate the roll off.
+    :param data: is the given data.
+    :param roll_perc: is the roll percentage.
+    :param win_type: is the window type.
+    :param win_length: is the window length.
+    :param hop_size: is the hop size.
+    :param sr:
+    :return: the roll off.
+    """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     magnitudes = np.abs(np.fft.fft(framed_w_window))
     frequencies = np.fft.fftfreq(win_length)

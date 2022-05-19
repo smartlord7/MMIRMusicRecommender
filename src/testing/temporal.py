@@ -8,6 +8,15 @@ def calc_fundamental_freq(data: np.ndarray,
                           win_length: int = 2048,
                           hop_size: float = 23.22,
                           sr: float = 22050):
+    """
+    Function used to calculate the fundamental frequency.
+    :param data: is the given data.
+    :param win_type: is the window type.
+    :param win_length: is the windows length.
+    :param hop_size: is the hop size.
+    :param sr:
+    :return: the fundamental frequency.
+    """
 
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     f0 = np.empty((framed_w_window.shape[0]))
@@ -31,6 +40,15 @@ def calc_rms(data: np.ndarray,
              win_length: int = 2048,
              hop_size: float = 23.22,
              sr: float = 22050):
+    """
+    Function used to calculate the root mean square.
+    :param data: is the given data.
+    :param win_type: is the window type.
+    :param win_length: is the window length.
+    :param hop_size: is the hop size.
+    :param sr:
+    :return: the root mean square.
+    """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     squared = np.sum(framed_w_window ** 2, axis=1) ** (1 / 2)
     rms = squared / framed_w_window.shape[1]
@@ -43,7 +61,15 @@ def calc_zero_crossing_rate(data: np.ndarray,
                             win_length: int = 2048,
                             hop_size: float = 23.22,
                             sr: float = 22050):
-
+    """
+    Function used to calculate the zero crossing rate.
+    :param data: is the given data.
+    :param win_type: is the window type.
+    :param win_length: is the window length.
+    :param hop_size: is the hop size.
+    :param sr:
+    :return: the zero crossing rate.
+    """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
     zero_crossing_rate = np.sum(np.diff(framed_w_window > 0, axis=1), axis=1)
 
