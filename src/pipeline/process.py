@@ -101,3 +101,19 @@ def process_data(stats_functions: list,
 
     all_processed = normalize_min_max(all_processed)
     np.savetxt(out_path, all_processed, fmt='%f', delimiter=DELIMITER_FEATURE)
+
+
+def process_default_features(in_path, out_path):
+    """
+    Function used to process the used features.
+    :param in_path: the input directory.
+    :param out_path: the output directory.
+    :return: required values.
+    """
+    matrix = np.genfromtxt(in_path, delimiter=DELIMITER_FEATURE)
+    values = matrix[1:, 1:matrix.shape[1] - 1]
+
+    values = normalize_min_max(values)
+    np.savetxt(out_path, values, delimiter=DELIMITER_FEATURE)
+
+    return values

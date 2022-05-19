@@ -5,10 +5,9 @@ from features.librosa_wrap.misc import *
 from features.librosa_wrap.spectral import *
 from features.librosa_wrap.temporal import *
 from pipeline.process import *
-from testing.features import *
 from pipeline.sim_analysis import gen_distances, rank_by_sim_analysis, objective_analysis, \
     calc_precision
-
+from test.features import process_default_features
 
 FUNCTIONS_STATISTICS = [np.mean, np.std, stats.skew, stats.kurtosis, np.median, np.max, np.min]
 FUNCTIONS_FEATURES = [calc_mfcc, calc_centroid, calc_bandwidth, calc_contrast,
