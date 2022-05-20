@@ -51,8 +51,8 @@ def generate_distances(default_features):
 
 
 def correlate_features():
-    librosa_sim_matrix = np.genfromtxt(OUT_PATH_ALL_TEST_FEATURES, delimiter=DELIMITER_FEATURE)
-    root_sim_matrix = np.genfromtxt(OUT_PATH_ALL_ROOT_TEST_FEATURES, delimiter=DELIMITER_FEATURE)
+    librosa_sim_matrix = np.genfromtxt(OUT_PATH_ALL_FEATURES, delimiter=DELIMITER_FEATURE)
+    root_sim_matrix = np.genfromtxt(OUT_PATH_ALL_ROOT_FEATURES, delimiter=DELIMITER_FEATURE)
 
     import pandas as pd
     df1 = pd.DataFrame(librosa_sim_matrix)
@@ -90,12 +90,12 @@ def main():
     """
         Main function.
     """
-
     queries = setup()
     objective_analysis()
     default_features = process()
     generate_distances(default_features)
     analyse_similarity(queries)
+    correlate_features()
 
 
 if __name__ == '__main__':

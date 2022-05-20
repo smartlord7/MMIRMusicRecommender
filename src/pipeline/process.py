@@ -105,6 +105,7 @@ def process_data(stats_functions: list,
     all_processed[all_processed == -inf] = 0
     all_processed[all_processed == inf] = 0
     all_processed[all_processed == NaN] = 0
+    all_processed[all_processed == 'nan'] = 0
     all_processed = normalize_min_max(np.array(all_processed))
 
     np.savetxt(out_path, all_processed, fmt='%f', delimiter=DELIMITER_FEATURE)

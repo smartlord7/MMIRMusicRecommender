@@ -9,6 +9,7 @@ def calc_mfcc(data: np.ndarray,
               win_length: int = 2048,
               hop_size: float = 23.22,
               sr: float = 22050,
+              n_mfcc: int = 13,
               debug: bool = False):
 
     normalized = normalize(data)
@@ -37,8 +38,7 @@ def calc_mfcc(data: np.ndarray,
 
     log = 10.0 * np.log10(filtered)
 
-    n_dct_filter = 40
-    dct_filters = dct(n_dct_filter, n_mel_filters)
+    dct_filters = dct(n_mfcc, n_mel_filters)
     mfcc = np.dot(dct_filters, log)
 
     if debug:
