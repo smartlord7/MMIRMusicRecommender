@@ -6,7 +6,7 @@ from scipy.signal import get_window
 def normalize(data):
     """
     Function used to normalize the data.
-    :param data: the given information-
+    :param data: the given information.
     :return: the normalized data.
     """
     data = data / np.max(np.abs(data))

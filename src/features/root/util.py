@@ -4,6 +4,11 @@ from scipy.signal import get_window
 
 
 def normalize(data):
+    """
+       Function used to normalize the data.
+       :param data: the given information.
+       :return: the normalized data.
+    """
     data = data / np.max(np.abs(data))
 
     return data
@@ -13,6 +18,14 @@ def frame(data,
           win_length: float = 2048,
           hop_size: float = 23.22,
           sr: float = 22050):
+    """
+        Function used to calculate the frames.
+        :param data: the given data.
+        :param win_length: the window length.
+        :param hop_size: the hop size.
+        :param sr: the sample rate.
+        :return: the frames
+    """
     data = np.pad(data, int(win_length / 2), mode='reflect')
     len_frame = np.round(sr * hop_size / 1000).astype(np.int32)
     n_frames = int((len(data) - win_length) / len_frame) + 1
@@ -29,6 +42,15 @@ def windowed_frame(data: np.ndarray,
                    win_length: int = 2048,
                    hop_size: float = 23.22,
                    sr: float = 22050):
+    """
+        Function used to calculate the windowed frames.
+        :param data: is the given data.
+        :param win_type: the window type.
+        :param win_length: the windowd length.
+        :param hop_size: the hop size.
+        :param sr: the sample rate.
+        :return: the windowed frames.
+    """
     framed = frame(data, win_length, hop_size, sr)
     window = get_window(win_type, win_length, fftbins=True)
     framed_w_window = (framed * window)

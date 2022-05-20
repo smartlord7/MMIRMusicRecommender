@@ -63,6 +63,10 @@ def generate_distances(default_features):
 
 
 def correlate_features():
+    """
+    Function used to correlate the features.
+    :return:
+    """
     librosa_sim_matrix = np.genfromtxt(OUT_PATH_ALL_FEATURES, delimiter=DELIMITER_FEATURE)
     root_sim_matrix = np.genfromtxt(OUT_PATH_ALL_ROOT_FEATURES, delimiter=DELIMITER_FEATURE)
 
