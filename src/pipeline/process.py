@@ -114,6 +114,6 @@ def process_default_features(in_path, out_path):
     values = matrix[1:, 1:matrix.shape[1] - 1]
 
     values = normalize_min_max(values)
-    np.savetxt(out_path, values, delimiter=DELIMITER_FEATURE)
+    np.savetxt(out_path, values, fmt='%f', delimiter=DELIMITER_FEATURE)
 
     return values
