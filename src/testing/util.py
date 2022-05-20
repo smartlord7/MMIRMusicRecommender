@@ -23,7 +23,7 @@ def frame(data,
     :param data: the given data.
     :param win_length: the window length.
     :param hop_size: the hop size.
-    :param sr:
+    :param sr: the sample rate.
     :return: the frames
     """
     data = np.pad(data, int(win_length / 2), mode='reflect')
@@ -48,7 +48,7 @@ def windowed_frame(data: np.ndarray,
     :param win_type: the window type.
     :param win_length: the windowd length.
     :param hop_size: the hop size.
-    :param sr:
+    :param sr: the sample rate.
     :return: the windowed frames.
     """
     framed = frame(data, win_length, hop_size, sr)
@@ -59,9 +59,7 @@ def windowed_frame(data: np.ndarray,
 
 
 def power(data):
-    """
 
-    """
     return np.square(np.abs(data))
 
 

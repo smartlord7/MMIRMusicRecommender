@@ -14,7 +14,7 @@ def calc_mfcc(data: np.ndarray,
     :param win_type: is the window type.
     :param win_length: is the window length.
     :param hop_size: is the hop size.
-    :param sr:
+    :param sr: the sample rate.
     :param debug: used to debug.
     :return: the MFCC.
     """
@@ -67,7 +67,7 @@ def calc_centroid(data: np.ndarray,
     :param win_type: is the window type.
     :param win_length: is the window length.
     :param hop_size: is the hop size.
-    :param sr:
+    :param sr: the sample rate.
     :return: the centroid.
     """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
@@ -91,7 +91,7 @@ def calc_bandwidth(data: np.ndarray,
     :param win_type: is the window type.
     :param win_length: is the window length.
     :param hop_size: is the hop size.
-    :param sr:
+    :param sr: the sample rate.
     :return: the bandwidth.
     """
     centroids = calc_centroid(data, win_type, win_length, hop_size, sr)
@@ -125,7 +125,7 @@ def calc_flatness(data: np.ndarray,
     :param win_type: is the window type.
     :param win_length: is the window length
     :param hop_size: is the hop size
-    :param sr:
+    :param sr: the sample rate.
     :return: the flatness.
     """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
@@ -153,7 +153,7 @@ def calc_roll_off(data: np.ndarray,
     :param win_type: is the window type.
     :param win_length: is the window length.
     :param hop_size: is the hop size.
-    :param sr:
+    :param sr: the sample rate.
     :return: the roll off.
     """
     framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
