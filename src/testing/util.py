@@ -4,6 +4,11 @@ from scipy.signal import get_window
 
 
 def normalize(data):
+    """
+    Function used to normalize the data.
+    :param data: the given information-
+    :return: the normalized data.
+    """
     data = data / np.max(np.abs(data))
 
     return data
@@ -13,6 +18,14 @@ def frame(data,
           win_length: float = 2048,
           hop_size: float = 23.22,
           sr: float = 22050):
+    """
+    Function used to calculate the frames.
+    :param data: the given data.
+    :param win_length: the window length.
+    :param hop_size: the hop size.
+    :param sr:
+    :return: the frames
+    """
     data = np.pad(data, int(win_length / 2), mode='reflect')
     len_frame = np.round(sr * hop_size / 1000).astype(np.int32)
     n_frames = int((len(data) - win_length) / len_frame) + 1
@@ -29,6 +42,15 @@ def windowed_frame(data: np.ndarray,
                    win_length: int = 2048,
                    hop_size: float = 23.22,
                    sr: float = 22050):
+    """
+    Function used to calculate the windowed frames.
+    :param data: is the given data.
+    :param win_type: the window type.
+    :param win_length: the windowd length.
+    :param hop_size: the hop size.
+    :param sr:
+    :return: the windowed frames.
+    """
     framed = frame(data, win_length, hop_size, sr)
     window = get_window(win_type, win_length, fftbins=True)
     framed_w_window = (framed * window)
@@ -37,10 +59,14 @@ def windowed_frame(data: np.ndarray,
 
 
 def power(data):
+    """
+
+    """
     return np.square(np.abs(data))
 
 
 def freq_to_mel(freqs):
+
     return 2595.0 * np.log10(1.0 + freqs / 700.0)
 
 
@@ -76,6 +102,12 @@ def mel_filter_bank(filter_points, win_length=2048, debug=False):
 
 
 def dct(n, length):
+    """
+    Function used to calculate the dct.
+    :param n:
+    :param length:
+    :return:
+    """
     dct_values = np.empty((n, length))
     dct_values[0, :] = 1.0 / np.sqrt(length)
 
