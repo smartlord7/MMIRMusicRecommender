@@ -17,7 +17,10 @@ def calc_fundamental_freq(data: np.ndarray,
         corr = scipy.signal.convolve(frame, frame, mode='full')
         corr = corr[len(corr) // 2:]
         d = np.diff(corr)
-        start = np.nonzero(d > 0)[0][0]
+        if len(d.shape) < 2:
+            start = 0
+        else:
+            start = np.nonzero(d > 0)[0][0]
         peak = np.argmax(corr[start:]) + start
         px, py = parabolic(corr, peak)
         f0[i] = sr / px

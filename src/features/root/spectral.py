@@ -1,5 +1,7 @@
+import numpy as np
 import scipy.fftpack
-from util import *
+from matplotlib import pyplot as plt
+from features.root.util import normalize, windowed_frame, mel_filter_points, mel_filter_bank, dct, power
 
 
 def calc_mfcc(data: np.ndarray,

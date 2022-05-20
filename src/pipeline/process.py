@@ -1,6 +1,8 @@
 import os
 import librosa
 import numpy as np
+from numpy import NaN, inf
+
 from const import *
 from os.path import isfile
 from sklearn import preprocessing
@@ -88,7 +90,7 @@ def process_data(stats_functions: list,
 
     data_files = os.listdir(dir_path)
     data_files.sort()
-    all_processed = np.empty((len(data_files), N_FEATURE_ARRAY_COLS))
+    all_processed = list()
     i = int()
 
     for data_file_name in data_files:
@@ -96,10 +98,15 @@ def process_data(stats_functions: list,
             print("[DEBUG] Processing %s..." % data_file_name)
             data = librosa.load(dir_path + data_file_name, sr=SAMPLING_RATE, mono=IS_AUDIO_MODE_MONO)[0]
             processed = featurize(data, stats_functions, features_functions)
-            all_processed[i] = processed
+            all_processed.append(processed)
             i += 1
 
-    all_processed = normalize_min_max(all_processed)
+    all_processed = np.array(all_processed)
+    all_processed[all_processed == -inf] = 0
+    all_processed[all_processed == inf] = 0
+    all_processed[all_processed == NaN] = 0
+    all_processed = normalize_min_max(np.array(all_processed))
+
     np.savetxt(out_path, all_processed, fmt='%f', delimiter=DELIMITER_FEATURE)
 
 

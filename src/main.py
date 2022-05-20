@@ -1,23 +1,26 @@
 import warnings
 from scipy.stats import stats
-from features.librosa_wrap.misc import *
-from features.librosa_wrap.spectral import *
-from features.librosa_wrap.temporal import *
 from pipeline.process import *
-from pipeline.sim_analysis import gen_distances, rank_by_sim_analysis, objective_analysis, \
+import features.librosa_wrap.misc as lwm
+import features.librosa_wrap.spectral as lws
+import features.librosa_wrap.temporal as lwt
+import features.root.spectral as frs
+import features.root.temporal as frt
+from pipeline.sim_analysis import gen_distances, \
+    rank_by_sim_analysis, \
+    objective_analysis, \
     calc_precision
 
 FUNCTIONS_STATISTICS = [np.mean, np.std, stats.skew, stats.kurtosis, np.median, np.max, np.min]
-FUNCTIONS_FEATURES = [calc_mfcc, calc_centroid, calc_bandwidth, calc_contrast,
-                      calc_flatness, calc_rolloff, calc_fundamental_freq, calc_rms,
-                      calc_zero_crossing_rate, calc_tempo]
+FUNCTIONS_FEATURES = [lws.calc_mfcc, lws.calc_centroid, lws.calc_bandwidth, lws.calc_contrast,
+                      lws.calc_flatness, lws.calc_roll_off, lwt.calc_fundamental_freq, lwt.calc_rms,
+                      lwt.calc_zero_crossing_rate, lwm.calc_tempo]
+FUNCTIONS_ROOT_FEATURES = [frs.calc_mfcc, frs.calc_centroid, frs.calc_bandwidth, lws.calc_contrast,
+                           frs.calc_flatness, frs.calc_roll_off, frt.calc_fundamental_freq, frt.calc_rms,
+                           frt.calc_zero_crossing_rate, lwm.calc_tempo]
 
 
 def setup():
-    """
-    Setup function.
-    :return: The queries.
-    """
     warnings.filterwarnings("ignore")
     queries = os.listdir(PATH_QUERIES)
 
@@ -25,34 +28,45 @@ def setup():
 
 
 def process():
-    """
-    Function used to process data.
-    :return: the default features.
-    """
+    print("Processing already computed features...")
     default_features = process_default_features(IN_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_FEATURES)
-    process_data(FUNCTIONS_STATISTICS, FUNCTIONS_FEATURES)
+    print("Processing database using librosa based features...")
+    process_data(FUNCTIONS_STATISTICS, FUNCTIONS_FEATURES,
+                 dir_path=IN_DIR_PATH_ALL_DATABASE,
+                 out_path=OUT_PATH_ALL_FEATURES)
+    print("Processing database using root implemented features...")
+    process_data(FUNCTIONS_STATISTICS, FUNCTIONS_ROOT_FEATURES,
+                 dir_path=IN_DIR_PATH_ALL_DATABASE,
+                 out_path=OUT_PATH_ALL_ROOT_FEATURES)
 
     return default_features
 
 
 def generate_distances(default_features):
-    """
-    Function used to generate the distances.
-    :param default_features: the default features.
-    :return:
-    """
     for dist in TYPES_DISTANCES:
         gen_distances(dist)
         gen_distances(dist, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, default_features)
-        gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES, default_features)
+        gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES)
+        gen_distances(dist, OUT_PATH_ALL_ROOT_FEATURES, OUT_PATH_DEFAULT_DISTANCES)
+
+
+def correlate_features():
+    librosa_sim_matrix = np.genfromtxt(OUT_PATH_ALL_TEST_FEATURES, delimiter=DELIMITER_FEATURE)
+    root_sim_matrix = np.genfromtxt(OUT_PATH_ALL_ROOT_TEST_FEATURES, delimiter=DELIMITER_FEATURE)
+
+    import pandas as pd
+    df1 = pd.DataFrame(librosa_sim_matrix)
+    df2 = pd.DataFrame(root_sim_matrix)
+    l = len(librosa_sim_matrix)
+    mean = int()
+
+    for i in range(l):
+        mean += df1[i].corr(df2[i])
+
+    print(mean / l)
 
 
 def analyse_similarity(queries):
-    """
-    Function used to analise the similarities.
-    :param queries: are the queries to be compared.
-    :return:
-    """
     for query in queries:
         results_obj = objective_analysis(query=query)
         results_obj_ids = list(map(lambda x: x[0], results_obj))

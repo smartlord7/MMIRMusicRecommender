@@ -51,7 +51,7 @@ def calc_flatness(matrix):
     return lf.spectral_flatness(y=matrix)
 
 
-def calc_rolloff(matrix):
+def calc_roll_off(matrix):
     """
     Function used to calculate the rolloff.
     :param matrix: the given matrix.
