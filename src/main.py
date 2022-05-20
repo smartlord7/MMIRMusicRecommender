@@ -59,7 +59,7 @@ def generate_distances(default_features):
         gen_distances(dist)
         gen_distances(dist, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, default_features)
         gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES)
-        gen_distances(dist, OUT_PATH_ALL_ROOT_FEATURES, OUT_PATH_DEFAULT_DISTANCES)
+        gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_ALL_ROOT_DISTANCES)
 
 
 def correlate_features():
@@ -71,15 +71,24 @@ def correlate_features():
     root_sim_matrix = np.genfromtxt(OUT_PATH_ALL_ROOT_FEATURES, delimiter=DELIMITER_FEATURE)
 
     import pandas as pd
+    root_sim_matrix[np.isnan(root_sim_matrix)] = 0
+    librosa_sim_matrix[np.isnan(librosa_sim_matrix)] = 0
     df1 = pd.DataFrame(librosa_sim_matrix)
     df2 = pd.DataFrame(root_sim_matrix)
-    l = len(librosa_sim_matrix)
-    mean = int()
+    l = librosa_sim_matrix.shape[1]
+    mean = float()
+    mean2 = float()
+    c = int()
 
     for i in range(l):
-        mean += df1[i].corr(df2[i])
+        val = df1[i].corr(df2[i])
+        mean += val
+        if np.isnan(mean):
+            continue
+        mean2 = mean
+        c += 1
 
-    print(mean / l)
+    print(mean2 / c)
 
 
 def analyse_similarity(queries):
