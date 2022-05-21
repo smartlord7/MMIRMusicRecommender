@@ -52,7 +52,7 @@ def calc_rms(audio_buffer: np.ndarray) -> np.ndarray:
 def calc_zero_crossing_rate(audio_buffer: np.ndarray) -> np.ndarray:
     """
     Function used to calculate the zero crossing rate per window of a given audio buffer, using the librosa library.
-    :param matrix: The buffer from which the zero crossing rate will be extracted.
+    :param audio_buffer: The buffer from which the zero crossing rate will be extracted.
     :return: The calculated zero crossing rate.
     """
     return lf.zero_crossing_rate(y=audio_buffer)

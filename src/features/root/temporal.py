@@ -1,23 +1,32 @@
+# region Dependencies
+
+
 import numpy as np
 import scipy.signal
-from testing.util import windowed_frame, parabolic
+from features.root.util import windowed_frame, parabolic
 
 
-def calc_fundamental_freq(data: np.ndarray,
+# endregion Dependencies
+
+
+# region Public Functions
+
+
+def calc_fundamental_freq(audio_buffer: np.ndarray,
                           win_type: str = "hann",
                           win_length: int = 2048,
                           hop_size: float = 23.22,
-                          sr: float = 22050):
+                          sr: float = 22050) -> np.ndarray:
     """
-       Function used to calculate the fundamental frequency.
-       :param data: is the given data.
-       :param win_type: is the window type.
-       :param win_length: is the windows length.
-       :param hop_size: is the hop size.
-       :param sr: the sample rate.
-       :return: the fundamental frequency.
+    Function used to calculate the fundamental frequency per window of a given audio buffer, using a root-implemented logic.
+    :param audio_buffer: The buffer from which the MFCCs will be extracted.
+    :param win_type: The window type used when applying the sliding window method (default: "hann").
+    :param win_length: The size of the window used when applying the sliding window method to obtain the audio_buffer frames (default: 2048).
+    :param hop_size: The hop size used when applying the sliding window method to obtain the audio_buffer frames (default: 23.22ms).
+    :param sr: The sample rate used when applying discrete transforms (default: 22050).
+    :return: The calculated spectral centroid.
     """
-    framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
+    framed_w_window = windowed_frame(audio_buffer, win_type, win_length, hop_size, sr)
     f0 = np.empty((framed_w_window.shape[0]))
     i = int()
 
@@ -37,42 +46,45 @@ def calc_fundamental_freq(data: np.ndarray,
     return f0
 
 
-def calc_rms(data: np.ndarray,
+def calc_rms(audio_buffer: np.ndarray,
              win_type: str = "hann",
              win_length: int = 2048,
              hop_size: float = 23.22,
-             sr: float = 22050):
+             sr: float = 22050) -> np.ndarray:
     """
-        Function used to calculate the root mean square.
-        :param data: is the given data.
-        :param win_type: is the window type.
-        :param win_length: is the window length.
-        :param hop_size: is the hop size.
-        :param sr: the sample rate.
-        :return: the root mean square.
+    Function used to calculate the root mean squared per window of a given audio buffer, using a root-implemented logic.
+    :param audio_buffer: The buffer from which the MFCCs will be extracted.
+    :param win_type: The window type used when applying the sliding window method (default: "hann").
+    :param win_length: The size of the window used when applying the sliding window method to obtain the audio_buffer frames (default: 2048).
+    :param hop_size: The hop size used when applying the sliding window method to obtain the audio_buffer frames (default: 23.22ms).
+    :param sr: The sample rate used when applying discrete transforms (default: 22050).
+    :return: The root mean squared.
     """
-    framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
+    framed_w_window = windowed_frame(audio_buffer, win_type, win_length, hop_size, sr)
     squared = np.sum(framed_w_window ** 2, axis=1) ** (1 / 2)
     rms = squared / framed_w_window.shape[1]
 
     return rms
 
 
-def calc_zero_crossing_rate(data: np.ndarray,
+def calc_zero_crossing_rate(audio_buffer: np.ndarray,
                             win_type: str = "hann",
                             win_length: int = 2048,
                             hop_size: float = 23.22,
-                            sr: float = 22050):
+                            sr: float = 22050) -> np.ndarray:
     """
-        Function used to calculate the zero crossing rate.
-        :param data: is the given data.
-        :param win_type: is the window type.
-        :param win_length: is the window length.
-        :param hop_size: is the hop size.
-        :param sr: the sample rate.
-        :return: the zero crossing rate.
+    Function used to calculate the zero crossing rate per window of a given audio buffer, using a root-implemented logic.
+    :param audio_buffer: The buffer from which the MFCCs will be extracted.
+    :param win_type: The window type used when applying the sliding window method (default: "hann").
+    :param win_length: The size of the window used when applying the sliding window method to obtain the audio_buffer frames (default: 2048).
+    :param hop_size: The hop size used when applying the sliding window method to obtain the audio_buffer frames (default: 23.22ms).
+    :param sr: The sample rate used when applying discrete transforms (default: 22050).
+    :return: The zero crossing rate.
     """
-    framed_w_window = windowed_frame(data, win_type, win_length, hop_size, sr)
+    framed_w_window = windowed_frame(audio_buffer, win_type, win_length, hop_size, sr)
     zero_crossing_rate = np.sum(np.diff(framed_w_window > 0, axis=1), axis=1)
 
     return zero_crossing_rate
+
+
+# endregion Public Functions
