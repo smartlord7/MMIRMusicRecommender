@@ -78,6 +78,18 @@ def correlate_distances():
         print("Min.: %s" % np.min(r_list))
 
 
+def show_ranking(query: str, obj_ids: list, dist_func: str, dist_file_path: str, database_path: str):
+    dist_file_name = dist_file_path + dist_func + EXTENSION_CSV
+    print("[DEBUG] Ranking results for query %s based on '%s' distanced features (source = %s)" % (query, dist_func, dist_file_name))
+    results_features, dist = rank_by_sim_analysis(query, dist_file_name, database_path)
+    results_features_ids = list()
+
+    for i in range(len(results_features)):
+        results_features_ids.append(results_features[i].strip(EXTENSION_MP3))
+        print("%d - %s (%.4f)" % (i + 1, results_features[i], dist[i]))
+    print("Precision: %.2f" % calc_precision(results_features[1:], obj_ids))
+
+
 def analyse_similarity(queries):
     """
     Function used to analise the similarities.
@@ -94,14 +106,10 @@ def analyse_similarity(queries):
             print("%d - %s: %d" % (i + 1, curr[0], curr[3]))
 
         for dist in TYPES_DISTANCES:
-            dist_file_name = OUT_PATH_ALL_ROOT_DISTANCES + dist + EXTENSION_CSV
-            print("[DEBUG] Ranking results for query %s based on '%s' distanced features (source = %s)" % (query, dist, dist_file_name))
-            results_features, dist = rank_by_sim_analysis(query, dist_file_name, IN_DIR_PATH_ALL_DATABASE)
-            results_features_ids = list()
-            for i in range(len(results_features)):
-                results_features_ids.append(results_features[i].strip(EXTENSION_MP3))
-                print("%d - %s (%.4f)" % (i + 1, results_features[i], dist[i]))
-            print("Precision: %.2f" % calc_precision(results_features_ids[1:], results_obj_ids))
+            show_ranking(query, results_obj_ids, dist, OUT_PATH_ALL_ROOT_DISTANCES, IN_DIR_PATH_ALL_DATABASE)
+            show_ranking(query, results_obj_ids, dist, OUT_PATH_DISTANCES, IN_DIR_PATH_ALL_DATABASE)
+            show_ranking(query, results_obj_ids, dist, OUT_PATH_DEFAULT_DISTANCES, IN_DIR_PATH_ALL_DATABASE)
+
 
 
 def main():

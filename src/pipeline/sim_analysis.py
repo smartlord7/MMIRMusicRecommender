@@ -35,7 +35,7 @@ def gen_distances(dist_func: str,
 def rank_by_sim_analysis(query_file_path: str,
                          distances_file_path: str,
                          database_path: str,
-                         n:int = 21) -> tuple:
+                         n: int = 21) -> tuple:
     """
     Function used to calculate the ranking of the results based on the similarity analysis of the query and the database.
     :param query_file_path: The path of the file that contains the query data.
