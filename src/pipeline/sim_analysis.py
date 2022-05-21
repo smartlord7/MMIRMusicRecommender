@@ -1,11 +1,17 @@
+# region Dependencies
+
+
 import os
 import numpy as np
+from const import *
 from os.path import isfile
 from metrics.similarity import self_dist
-from const import DELIMITER_FEATURE, EXTENSION_CSV, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, \
-    WRAPPER_METADATA_ADJECTIVES, DELIMITER_METADATA_ADJECTIVES, EXTENSION_MP3, DELIMITER_METADATA_PROPERTIES, \
-    PATH_METADATA, OUT_PATH_CONTEXT_SIMILARITY, DELIMITER_METADATA_SIMILARITY, COL_METADATA_MUSIC_ID, \
-    COL_METADATA_ARTIST, COL_METADATA_GENRE, COL_METADATA_QUADRANT, COL_METADATA_EMOTIONS
+
+
+# endregion Dependencies
+
+
+# region Public Functions
 
 
 def gen_distances(dist_func: str,
@@ -154,3 +160,6 @@ def calc_precision(results1: list,
     intersection = set1.intersection(set2)
 
     return len(intersection) / max(len(results1), len(results2)) * 100
+
+
+# endregion Public Functions

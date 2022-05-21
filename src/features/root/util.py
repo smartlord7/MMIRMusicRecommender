@@ -75,7 +75,7 @@ def power(array) -> np.ndarray:
     return np.square(np.abs(array))
 
 
-def freq_to_mel(frequencies: np.ndarrau) -> np.ndarray:
+def freq_to_mel(frequencies: np.ndarray) -> np.ndarray:
     """
     Function used to transpose a set of frequencies to the Mel domain.
     :param frequencies: The frequencies to transpose.

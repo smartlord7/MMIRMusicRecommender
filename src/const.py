@@ -1,8 +1,19 @@
+# region Const Text Processing
+
+
 DELIMITER_FEATURE = ","
 DELIMITER_METADATA_SIMILARITY = ","
 DELIMITER_METADATA_PROPERTIES = ","
 DELIMITER_METADATA_ADJECTIVES = "; "
 WRAPPER_METADATA_ADJECTIVES = "\"'"
+
+
+# endregion Const Text Processing
+
+
+# region Const File Management
+
+
 IN_PATH_DEFAULT_FEATURES = "../data/features/default/top100_features.csv"
 OUT_PATH_DEFAULT_FEATURES = "../out/features/default/top100_features_processed.csv"
 IN_DIR_PATH_ALL_DATABASE = "../data/database/all/"
@@ -21,6 +32,13 @@ EXTENSION_MP3 = ".mp3"
 EXTENSION_CSV = ".csv"
 PATH_METADATA = "../data/database_info/panda_dataset_taffc_metadata.csv"
 
+
+# endregion Const File Management
+
+
+# region Const Process Parameters
+
+
 TYPES_DISTANCES = ["euclidean", "manhattan", "cosine"]
 
 SAMPLING_RATE = 22500
@@ -33,3 +51,6 @@ COL_METADATA_ARTIST = 1
 COL_METADATA_QUADRANT = 3
 COL_METADATA_EMOTIONS = 9
 COL_METADATA_GENRE = 11
+
+
+# endregion Const Process Parameters

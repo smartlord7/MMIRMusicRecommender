@@ -1,3 +1,6 @@
+# region Dependencies
+
+
 import warnings
 import librosa as librosa
 import librosa.display
@@ -7,9 +10,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def test() -> None:
+# endregion Dependencies
+
+
+# region Public Functions
+
+
+def test_libraries() -> None:
     """
-    Method used to testing the librosa library
+    Method used to test the librosa/ffmpeg library.
     """
     file_name = "data/queries/MT0000202045.mp3"
     sr = 22050
@@ -44,3 +53,6 @@ def test() -> None:
     plt.title('RMS')
 
     plt.show()
+
+
+# endregion Public Functions

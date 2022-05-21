@@ -1,11 +1,19 @@
+# region Dependencies
+
+
 import os
 import librosa
 import numpy as np
-from numpy import NaN, inf
-
 from const import *
+from numpy import NaN, inf
 from os.path import isfile
 from sklearn import preprocessing
+
+
+# endregion Dependencies
+
+
+# region Public Functions
 
 
 def normalize_min_max(matrix: np.ndarray) -> np.ndarray:
@@ -125,3 +133,6 @@ def process_default_features(in_path, out_path):
     np.savetxt(out_path, values, fmt='%f', delimiter=DELIMITER_FEATURE)
 
     return values
+
+
+# endregion Public Functions
