@@ -1,4 +1,6 @@
 import warnings
+
+import numpy as np
 from scipy.stats import stats
 from pipeline.process import *
 import features.librosa_wrap.misc as lwm
@@ -6,6 +8,7 @@ import features.librosa_wrap.spectral as lws
 import features.librosa_wrap.temporal as lwt
 import features.root.spectral as frs
 import features.root.temporal as frt
+from metrics.correlation import correlate
 from pipeline.sim_analysis import gen_distances, \
     rank_by_sim_analysis, \
     objective_analysis, \
@@ -59,36 +62,20 @@ def generate_distances(default_features):
         gen_distances(dist)
         gen_distances(dist, OUT_PATH_ALL_FEATURES, OUT_PATH_DISTANCES, default_features)
         gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_DEFAULT_DISTANCES)
-        gen_distances(dist, OUT_PATH_DEFAULT_FEATURES, OUT_PATH_ALL_ROOT_DISTANCES)
+        gen_distances(dist, OUT_PATH_ALL_ROOT_FEATURES, OUT_PATH_ALL_ROOT_DISTANCES)
 
 
-def correlate_features():
-    """
-    Function used to correlate the features.
-    :return:
-    """
-    librosa_sim_matrix = np.genfromtxt(OUT_PATH_ALL_FEATURES, delimiter=DELIMITER_FEATURE)
-    root_sim_matrix = np.genfromtxt(OUT_PATH_ALL_ROOT_FEATURES, delimiter=DELIMITER_FEATURE)
-
-    import pandas as pd
-    root_sim_matrix[np.isnan(root_sim_matrix)] = 0
-    librosa_sim_matrix[np.isnan(librosa_sim_matrix)] = 0
-    df1 = pd.DataFrame(librosa_sim_matrix)
-    df2 = pd.DataFrame(root_sim_matrix)
-    l = librosa_sim_matrix.shape[1]
-    mean = float()
-    mean2 = float()
-    c = int()
-
-    for i in range(l):
-        val = df1[i].corr(df2[i])
-        mean += val
-        if np.isnan(mean):
-            continue
-        mean2 = mean
-        c += 1
-
-    print(mean2 / c)
+def correlate_distances():
+    for dist in TYPES_DISTANCES:
+        file_suffix = dist + EXTENSION_CSV
+        file1 = OUT_PATH_ALL_ROOT_DISTANCES + file_suffix
+        file2 = OUT_PATH_DISTANCES + file_suffix
+        r_list = correlate(OUT_PATH_ALL_ROOT_DISTANCES + file_suffix, OUT_PATH_DISTANCES + file_suffix)
+        print("Correlation between distances from %s and %s: " % (file1, file2))
+        print("Mean: %s" % np.mean(r_list))
+        print("Std.: %s" % np.std(r_list))
+        print("Max: %s" % np.max(r_list))
+        print("Min.: %s" % np.min(r_list))
 
 
 def analyse_similarity(queries):
@@ -107,8 +94,9 @@ def analyse_similarity(queries):
             print("%d - %s: %d" % (i + 1, curr[0], curr[3]))
 
         for dist in TYPES_DISTANCES:
-            print("[DEBUG] Ranking results for query %s based on '%s' distanced features" % (query, dist))
-            results_features, dist = rank_by_sim_analysis(query, OUT_PATH_DEFAULT_DISTANCES + dist + EXTENSION_CSV, IN_DIR_PATH_ALL_DATABASE)
+            dist_file_name = OUT_PATH_ALL_ROOT_DISTANCES + dist + EXTENSION_CSV
+            print("[DEBUG] Ranking results for query %s based on '%s' distanced features (source = %s)" % (query, dist, dist_file_name))
+            results_features, dist = rank_by_sim_analysis(query, dist_file_name, IN_DIR_PATH_ALL_DATABASE)
             results_features_ids = list()
             for i in range(len(results_features)):
                 results_features_ids.append(results_features[i].strip(EXTENSION_MP3))
@@ -125,7 +113,7 @@ def main():
     default_features = process()
     generate_distances(default_features)
     analyse_similarity(queries)
-    correlate_features()
+    correlate_distances()
 
 
 if __name__ == '__main__':

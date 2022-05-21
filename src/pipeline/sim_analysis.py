@@ -27,7 +27,7 @@ def gen_distances(dist_func: str,
     print("[DEBUG] Calculating %s distances for %s ..." % (dist_func, in_path))
     if features_matrix is None:
         features_matrix = np.genfromtxt(in_path, delimiter=DELIMITER_FEATURE)
-
+    features_matrix[np.isnan(features_matrix)] = 0
     distances = self_dist(features_matrix, dist_func)
     np.savetxt(file_name, distances, fmt="%f", delimiter=DELIMITER_FEATURE)
 
