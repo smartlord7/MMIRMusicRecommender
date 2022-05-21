@@ -1,10 +1,20 @@
+# region Dependencies
+
+
 import numpy as np
 from scipy.spatial.distance import cosine
 from scipy.spatial.distance import cityblock
 from sklearn.metrics import pairwise_distances
 
 
-def euclidian_dist(array1: np.ndarray, array2: np.ndarray) -> float:
+# endregion Dependencies
+
+
+# region Public Functions
+
+
+def euclidian_dist(array1: np.ndarray,
+                   array2: np.ndarray) -> float:
     """
     Function that calculates the euclidian distance between two arrays.
     :param array1: The first array.
@@ -14,7 +24,8 @@ def euclidian_dist(array1: np.ndarray, array2: np.ndarray) -> float:
     return ((array1 - array2) ** 2).sum()
 
 
-def manhattan_dist(array1: np.ndarray, array2: np.ndarray) -> float:
+def manhattan_dist(array1: np.ndarray,
+                   array2: np.ndarray) -> float:
     """
     Function that calculates the Manhattan distance between two arrays.
     :param array1: The first array.
@@ -24,7 +35,8 @@ def manhattan_dist(array1: np.ndarray, array2: np.ndarray) -> float:
     return cityblock(array1, array2)
 
 
-def cosine_dist(array1: np.ndarray, array2: np.ndarray) -> float:
+def cosine_dist(array1: np.ndarray,
+                array2: np.ndarray) -> float:
     """
     Function that calculates the cosine distance between two arrays.
     :param array1: The first array.
@@ -34,7 +46,8 @@ def cosine_dist(array1: np.ndarray, array2: np.ndarray) -> float:
     return cosine(array1, array2)
 
 
-def self_dist(matrix: np.ndarray, type_metric: str) -> np.ndarray:
+def self_dist(matrix: np.ndarray,
+              type_metric: str) -> np.ndarray:
     """
     Function that calculates the correspondent similarity matrix of a given matrix.
     :param matrix: The matrix from which the distances between rows will be calculated.
@@ -42,3 +55,6 @@ def self_dist(matrix: np.ndarray, type_metric: str) -> np.ndarray:
     :return:
     """
     return pairwise_distances(matrix, metric=type_metric)
+
+
+# endregion Public Functions

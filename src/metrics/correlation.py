@@ -1,12 +1,24 @@
+# region Dependencies
+
+
 import numpy as np
 import pandas as pd
 from const import OUT_PATH_ALL_ROOT_DISTANCES, OUT_PATH_DISTANCES, DELIMITER_FEATURE
 
 
-def correlate(path1: str, path2: str):
+# endregion Dependencies
+
+
+# region Public Functions
+
+
+def correlate(path1: str,
+              path2: str):
     """
-    Function used to correlate two given matrices.
-    :return:
+    Function used to compute the Pearson correlation between two matrices stored in two CSV files.
+    :param path1: The path of the CSV file that contains the first matrix.
+    :param path2: The path of the CSV file that contains the second matrix.
+    :return: The calculated Pearson correlation coefficients between each row of both matrices
     """
     matrix1 = np.genfromtxt(path1, delimiter=DELIMITER_FEATURE)
     matrix2 = np.genfromtxt(path2, delimiter=DELIMITER_FEATURE)
@@ -23,3 +35,7 @@ def correlate(path1: str, path2: str):
         lt.append(val)
 
     return np.array(lt)
+
+
+# endregion Public Functions
+
